@@ -15,9 +15,17 @@ class SqlOutputValue
 {
 public:
     SqlOutputValue(const std::string& val){}
-private:
 
+    template<typename T>
+    T Get(){
+        throw std::logic_error("不支持的sql类型");
+    }
+
+private:
+    std::string m_value;
 };
+
+    
 
 class SqlInputValue
 {
@@ -61,9 +69,6 @@ public:
     std::string GetInt() const{return std::to_string(std::get<int64_t>(m_val));}
     std::string GetFloat() const{return std::to_string(std::get<double>(m_val));}
     std::string GetString() const{return std::get<std::string>(m_val);}
-    std::string GetNumber() const{
-        if(m_val.index() == 0)return std::to_string(std::get<int64_t>(m_val));
-    }
 
 private:
     using value = std::variant<int64_t, double, std::string>;

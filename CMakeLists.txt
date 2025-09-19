@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.5)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(BUILD_TEST ON)
+
 project(x-sql)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/subpro/xformat)
@@ -9,6 +12,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/subpro/xformat)
 set(INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/subpro/xformat/include
+    /usr/include/mysql/
 )
 
 set(LIBS
@@ -26,6 +30,14 @@ target_link_libraries(xsql PRIVATE xformat::static)
 add_executable (main test/main.cpp)
 target_link_libraries(main PRIVATE xsql::lib ) 
 target_link_libraries(main PRIVATE ${LIBS})
+
+if(BUILD_TEST)
+
+    add_executable (test_convert test/test_convert.cpp)
+    target_link_libraries(test_convert PRIVATE xsql::lib ) 
+    target_link_libraries(test_convert PRIVATE ${LIBS})
+
+endif()
 
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set (LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
