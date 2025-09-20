@@ -1,9 +1,34 @@
 #include "SqlQuery.h"
+#include "QueryResult.h"
 #include <mysql/mysql.h>
 #include <stdexcept>
 #include <string>
 
 namespace x{
+
+QueryBase::QueryBase(MYSQL* sql):
+    m_sql(sql)
+{
+    
+}
+
+QueryResult QueryBase::Execute()
+{
+    Generate();
+    if(mysql_query(m_sql, m_query.c_str())){
+        throw std::logic_error(Format("query error: {}", mysql_error(m_sql)));
+    }
+    return QueryResult(m_sql);
+}
+
+SelectQuery::SelectQuery(MYSQL* sql, 
+            const std::string& table, 
+            const std::vector<std::string>& fields):
+    QueryBase(sql),
+    m_table(table)
+{
+    m_select = FormatFields(fields);
+}
 
 std::string SelectQuery::FormatFields(const std::vector<std::string>& fields){
     std::string ret;
@@ -19,25 +44,11 @@ SqlQuery::SqlQuery(MYSQL* sql):
     m_sql(sql){
 }
 
-
-void SelectQuery::GetTableFiledMeta(const std::string& table){
-    if(mysql_query(m_sql, ("describe " + table).c_str())){
-        throw std::logic_error(
-                Format("describe table: {} error, {}", table, mysql_error(m_sql))
-        );
-    }
-
-    m_metas[table] = FieldMeta();
-    FieldMeta& meta = m_metas[table];
-    auto res = mysql_store_result(m_sql);
-    if(res == nullptr){
-        throw std::logic_error("store result error");
-    }
-    MYSQL_ROW row;
-    while((row = mysql_fetch_row(res))){
-        meta.InsertType(row[0], row[1]);
-    }
-    mysql_free_result(res);
+void SelectQuery::Generate(){
+    std::string sub_where;
+    if(sub_where.empty() == false)sub_where = Format("where {}", m_where);
+    m_query = x::Format("select {} from {} {}", m_select, m_table, sub_where);
+    std::cout << m_query << '\n';
 }
 
 }

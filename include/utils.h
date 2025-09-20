@@ -3,9 +3,7 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#include <type_traits>
 #include <xformat.h>
-#include <algorithm>
 
 namespace x{
 
@@ -21,7 +19,7 @@ inline constexpr bool is_arithmetic_v = std::is_arithmetic_v<T> && (std::is_same
 */
 
 /* 用作算术类型的转换 */
-template <typename T>
+template <typename T = std::string>
 constexpr T ConvertSqlValue(std::string_view str){
     T value;
     auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
@@ -31,9 +29,7 @@ constexpr T ConvertSqlValue(std::string_view str){
 
 /* 字符串类型的特化 */
 template <>
-constexpr std::string ConvertSqlValue<std::string>(std::string_view str){
-    return std::string(str);
-}
+std::string ConvertSqlValue<std::string>(std::string_view str);
 
 /* bool类型的特化 */
 template <>

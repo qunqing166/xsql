@@ -1,5 +1,6 @@
 #include "utils.h"
 #include <string>
+#include <algorithm>
 
 namespace x{
 
@@ -14,6 +15,13 @@ bool ConvertSqlValue<bool>(std::string_view str){
     if (str == "false" || str == "0" || str == "no"  || str == "off") return false;
     throw std::logic_error("convert to 'bool' error");
 }
+
+
+template <>
+std::string ConvertSqlValue<std::string>(std::string_view str){
+    return std::string(str);
+}
+
 
 }
 
