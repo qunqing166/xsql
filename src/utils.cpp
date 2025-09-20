@@ -1,9 +1,22 @@
 #include "utils.h"
-#include "SqlValue.h"
-#include <cstdint>
 #include <string>
 
 namespace x{
+
+namespace convert_detail{
+
+template <>
+bool ConvertSqlValue<bool>(std::string_view str){
+    // 去除大小写敏感
+    std::string val(str.length(), '0');
+    std::transform(str.begin(), str.end(), val.begin(), ::tolower);
+    if (str == "true"  || str == "1" || str == "yes" || str == "on")  return true;
+    if (str == "false" || str == "0" || str == "no"  || str == "off") return false;
+    throw std::logic_error("convert to 'bool' error");
+}
+
+}
+
 
 //std::string InjectionCheck(const SqlInputValue& value){
 //    if(value.IsInt())return std::to_string(value.GetInt());

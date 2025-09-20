@@ -34,7 +34,7 @@ void SelectQuery::GetTableFiledMeta(const std::string& table){
         throw std::logic_error("store result error");
     }
     MYSQL_ROW row;
-    while(row = mysql_fetch_row(res)){
+    while((row = mysql_fetch_row(res))){
         meta.InsertType(row[0], row[1]);
     }
     mysql_free_result(res);

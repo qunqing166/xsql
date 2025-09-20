@@ -20,13 +20,13 @@ SqlConnection::SqlConnection(   const std::string& user,
         if(sql == nullptr){
             throw std::logic_error("sql init error");
         }
-        if(mysql_real_connect( sql, 
-                            host.c_str(), 
-                            user.c_str(), 
-                            passwd.c_str(), 
-                            dbName.c_str(),
-                            port, nullptr, 0) == 0){
-            throw std::logic_error("");
+        if(mysql_real_connect(  sql, 
+                                host.c_str(), 
+                                user.c_str(), 
+                                passwd.c_str(), 
+                                dbName.c_str(),
+                                port, nullptr, 0) == nullptr){
+            throw std::logic_error("sql connect error");
         }
         m_sqls.push_back(sql);
     }

@@ -25,11 +25,13 @@ public:
         if(mysql_query(m_sql, m_query.c_str())){
             throw std::logic_error(Format("query error: {}", mysql_error(m_sql)));
         }
-
+        
+        /*
         auto res = mysql_store_result(m_sql);
         if(res == nullptr){
-            throw std::logic_error("get result error");
+            throw std::logic_error(Format("store_result error: {}", mysql_error(m_sql)));
         }
+        */
         return QueryResult(m_sql);
     }
 protected:
@@ -64,7 +66,10 @@ public:
 
 protected:
     virtual void Generate() override{
-        m_query = x::Format("select {} from {} where {}", m_select, m_table, m_where);
+        std::string sub_where;
+        if(sub_where.empty() == false)sub_where = Format("where {}", m_where);
+
+        m_query = x::Format("select {} from {} {}", m_select, m_table, sub_where);
     }
 
 private:

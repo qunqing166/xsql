@@ -37,15 +37,7 @@ constexpr std::string ConvertSqlValue<std::string>(std::string_view str){
 
 /* bool类型的特化 */
 template <>
-bool ConvertSqlValue<bool>(std::string_view str){
-    // 去除大小写敏感
-    std::string val(str.length(), '0');
-    std::transform(str.begin(), str.end(), val.begin(), ::tolower);
-    if (str == "true"  || str == "1" || str == "yes" || str == "on")  return true;
-    if (str == "false" || str == "0" || str == "no"  || str == "off") return false;
-    throw std::logic_error("convert to 'bool' error");
-}
-
+bool ConvertSqlValue<bool>(std::string_view str);
 
 }
 
