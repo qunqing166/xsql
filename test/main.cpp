@@ -1,6 +1,7 @@
 #include <exception>
 #include <iostream>
 #include <string>
+#include "QueryCondition.h"
 #include "QueryResult.h"
 #include "SqlConnection.h"
 #include <mysql/mysql.h>
@@ -12,7 +13,8 @@ int main()
 {
     try{
         x::SqlConnection con("root", "114514", "test");
-
+        
+        /*
         int val = con.Query().Insert("test", {  {"id", "3"},
                                                 {"name", "none"},
                                                 {"age", 14}}
@@ -22,7 +24,17 @@ int main()
         }else{
             std::cout << "error";
         }
+        */
 
+        int val = con.Query().Delete("test").Where(x::QueryWhere().Equal("name", "none")).Execute();
+        if(val > 0)
+        {
+            std::cout << "success\n";
+        }
+        else 
+        {
+            std::cout << "error\n";
+        }
 
         x::QueryResult res = con.Query().Select("test", {"id", "name", "age"}).Execute();
         while(auto row = res.GetRow())

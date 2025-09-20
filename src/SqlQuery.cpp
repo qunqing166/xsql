@@ -39,6 +39,12 @@ InsertQuery SqlQuery::Insert(const std::string& table, const std::vector<FieldAn
 }
 
 
+DeleteQuery SqlQuery::Delete(const std::string& table)
+{
+    return DeleteQuery(m_sql, table);
+}
+
+
 /***************************************************/
 
 
@@ -98,7 +104,7 @@ int InsertQuery::Execute()
     std::string query = Format("insert into {} ({}) values ({})", m_table, m_fields, m_values);
     if(mysql_query(m_sql, query.c_str()))
     {
-        throw std::logic_error(Format("mysql_query error, {}", mysql_error(m_sql)));
+        throw std::logic_error(Format("insert: mysql_query error, {}", mysql_error(m_sql)));
     }
     
     int val = mysql_affected_rows(m_sql);
@@ -107,11 +113,42 @@ int InsertQuery::Execute()
 }
 
 
+/******************************************************************************/
 
 
 
 
+DeleteQuery::DeleteQuery(MYSQL* sql, const std::string& table):
+    m_sql(sql), m_table(table)
+{
+    
+}
 
+DeleteQuery& DeleteQuery::Where(const std::string& condition)
+{
+    m_where = condition;
+    return *this;
+}
+
+DeleteQuery& DeleteQuery::Where(const QueryWhere& condition)
+{
+    m_where = condition.Get();
+    return *this;
+}
+
+int DeleteQuery::Execute()
+{
+    if(m_where.empty() == false)m_where = Format("where {}", m_where);
+    std::string query = Format("delete from {} {}", m_table, m_where);
+    if(mysql_query(m_sql, query.c_str()))
+    {
+        throw std::logic_error(Format("delete: mysql_query error, {}", mysql_error(m_sql)));
+    }
+    
+    int val = mysql_affected_rows(m_sql);
+    if(val == UINT64_MAX)return -1;
+    return val;
+}
 
 
 

@@ -1,7 +1,5 @@
 #pragma once
 #include <string>
-#include <strstream>
-#include <unordered_map>
 #include <vector>
 #include <mysql/mysql.h>
 #include <QueryCondition.h>
@@ -88,14 +86,30 @@ private:
 };
 
 
+/********************************************************************************/
 
 
+class DeleteQuery
+{
+public:
+    int Execute();
 
+    DeleteQuery& Where(const std::string& condition);
+    DeleteQuery& Where(const QueryWhere& condition);
 
+private:
 
+    DeleteQuery(MYSQL* sql, const std::string& table);
 
+private:
 
+    friend class SqlQuery;
 
+    MYSQL* m_sql;
+    std::string m_table;
+    std::string m_where;
+    
+};
 
 
 
