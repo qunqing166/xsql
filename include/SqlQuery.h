@@ -1,13 +1,17 @@
 #pragma once
 #include <string>
+#include <strstream>
 #include <unordered_map>
 #include <vector>
 #include <mysql/mysql.h>
 #include <QueryCondition.h>
 #include "QueryResult.h"
+#include "SqlValue.h"
 
 namespace x
 {
+
+using FieldAndValue = std::pair<std::string, SqlInputValue>;
 
 class SelectQuery;
 class InsertQuery;
@@ -22,8 +26,8 @@ public:
     SqlQuery(MYSQL* sql);
 
     SelectQuery Select(const std::string table, const std::vector<std::string>& fields);
-    InsertQuery Insert(const std::string& table, const std::vector<std::pair<std::string, std::string>>& fieldAndValue);
-    UpdateQuery Update(const std::string& table, const std::vector<std::pair<std::string, std::string>>& fieldAndValue);
+    InsertQuery Insert(const std::string& table, const std::vector<FieldAndValue>& fieldAndValue);
+    UpdateQuery Update(const std::string& table, const std::vector<FieldAndValue>& fieldAndValue);
     DeleteQuery Delete(const std::string& table);
    
 private:
@@ -31,8 +35,6 @@ private:
     MYSQL* m_sql;
 
 };
-
-
 
 
 class SelectQuery
@@ -65,6 +67,36 @@ private:
     std::string m_where;
     std::string m_oderby;
 };
+
+class InsertQuery
+{
+public:
+
+    int Execute();
+
+private:
+
+    InsertQuery(MYSQL* sql, const std::string& table, const std::vector<FieldAndValue>& filedAndValues);
+
+private:
+    friend class SqlQuery;
+
+    MYSQL* m_sql;
+    std::string m_table;
+    std::string m_fields;
+    std::string m_values;
+};
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

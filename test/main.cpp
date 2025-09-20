@@ -12,6 +12,18 @@ int main()
 {
     try{
         x::SqlConnection con("root", "114514", "test");
+
+        int val = con.Query().Insert("test", {  {"id", "3"},
+                                                {"name", "none"},
+                                                {"age", 14}}
+                                    ).Execute();
+        if(val > 0){
+            std::cout << "inset ok\n";
+        }else{
+            std::cout << "error";
+        }
+
+
         x::QueryResult res = con.Query().Select("test", {"id", "name", "age"}).Execute();
         while(auto row = res.GetRow())
         {
