@@ -45,6 +45,11 @@ DeleteQuery SqlQuery::Delete(const std::string& table)
 }
 
 
+UpdateQuery SqlQuery::Update(const std::string& table, const std::vector<FieldAndValue>& fieldAndValue)
+{
+    return  UpdateQuery(m_sql, table, fieldAndValue);
+}
+
 /***************************************************/
 
 
@@ -116,6 +121,49 @@ int InsertQuery::Execute()
 /******************************************************************************/
 
 
+UpdateQuery::UpdateQuery(MYSQL* sql, const std::string& table, const std::vector<FieldAndValue>& fieldAndValue):
+    m_sql(sql), m_table(table)
+{
+    auto begin = fieldAndValue.begin();
+    if(begin == fieldAndValue.end())
+    {
+        throw std::logic_error("update: field and value can not be empty");
+    }
+    m_fieldAndValue = Format("{}={}", begin->first, begin->second.Get());
+    while(++begin != fieldAndValue.end())
+    {
+        m_fieldAndValue += Format(",{}={}", begin->first, begin->second.Get());
+    }
+}
+
+int UpdateQuery::Execute()
+{
+    if(m_where.empty() == false)m_where = Format("where {}", m_where);
+    std::string query = Format("update {} set {} {}", m_table, m_fieldAndValue, m_where);
+    std::cout << query << '\n';
+    if(mysql_query(m_sql, query.c_str()))
+    {
+        throw std::logic_error(Format("update: mysql_query error, {}", mysql_error(m_sql)));
+    }
+    
+    int val = mysql_affected_rows(m_sql);
+    if(val == UINT64_MAX)return -1;
+    return val;
+}
+
+UpdateQuery& UpdateQuery::Where(const std::string& condition)
+{
+    m_where = condition;
+    return *this;
+}
+
+UpdateQuery& UpdateQuery::Where(const QueryWhere& condition)
+{
+    m_where = condition.Get();
+    return *this;
+}
+
+/*****************************************************************************/
 
 
 DeleteQuery::DeleteQuery(MYSQL* sql, const std::string& table):

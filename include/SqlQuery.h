@@ -85,9 +85,28 @@ private:
     std::string m_values;
 };
 
+class UpdateQuery
+{
+public:
+    
+    int Execute();
 
-/********************************************************************************/
+    UpdateQuery& Where(const std::string& condition);
+    UpdateQuery& Where(const QueryWhere& condition);
 
+private:
+    
+    UpdateQuery(MYSQL* sql, const std::string& table, const std::vector<FieldAndValue>& fieldAndValue);
+
+private:
+
+    friend class SqlQuery;
+
+    MYSQL* m_sql;
+    std::string m_table;
+    std::string m_where;
+    std::string m_fieldAndValue;
+};
 
 class DeleteQuery
 {
@@ -110,7 +129,5 @@ private:
     std::string m_where;
     
 };
-
-
 
 }

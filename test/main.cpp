@@ -26,7 +26,10 @@ int main()
         }
         */
 
-        int val = con.Query().Delete("test").Where(x::QueryWhere().Equal("name", "none")).Execute();
+        // int val = con.Query().Delete("test").Where(x::QueryWhere().Equal("name", "none")).Execute();
+
+        int val = con.Query().Update("test", {{"age", 16}}).Where(x::QueryWhere().Equal("id", 1)).Execute();
+
         if(val > 0)
         {
             std::cout << "success\n";
