@@ -17,16 +17,6 @@ SqlQuery::SqlQuery(MYSQL* sql):
 }
 
 
-SelectQuery::SelectQuery(MYSQL* sql, 
-            const std::string& table, 
-            const std::vector<std::string>& fields):
-    m_sql(sql),
-    m_table(table)
-{
-    m_select = FormatFields(fields);
-}
-
-
 SelectQuery SqlQuery::Select(const std::string table, const std::vector<std::string>& fields)
 {
     return SelectQuery(m_sql, table, fields);
@@ -53,28 +43,63 @@ UpdateQuery SqlQuery::Update(const std::string& table, const std::vector<FieldAn
 /***************************************************/
 
 
+SelectQuery::SelectQuery(MYSQL* sql, 
+            const std::string& table, 
+            const std::vector<std::string>& fields):
+    m_sql(sql),
+    m_table(table)
+{
+    auto begin = fields.begin();
+    if(begin == fields.end())
+    {
+        throw std::logic_error("select: field can not be empty");
+    }
+    m_select = *begin;
+    while(++begin != fields.end()){
+        m_select += ',' + *begin;
+    }
+}
+
+
 
 SelectQuery& SelectQuery::Where(const QueryWhere& condition){
     m_where = condition.Get();
     return *this;
 }
 
-std::string SelectQuery::FormatFields(const std::vector<std::string>& fields){
-    std::string ret;
-    auto begin = fields.begin();
-    ret = *begin;
-    while(++begin != fields.end()){
-        ret += ',' + *begin;
-    }
-    return ret;
+SelectQuery& SelectQuery::OrderBy(const std::string& field, char order)
+{
+    std::string str;
+    if(order == 'd')str = "desc";
+    else if(order == 'a')str = "asc";
+    m_orderby = Format("order by {} {}", field, str);
+    return *this;
+} 
+
+SelectQuery& SelectQuery::Limit(int count)
+{
+    m_limit = count;
+    return *this;
 }
 
+SelectQuery& SelectQuery::Offset(int count)
+{
+    m_offset = count;
+    return *this;
+}
 
 QueryResult SelectQuery::Execute()
 {
     std::string sub_where;
+    std::string sub_orderby;
+    std::string sub_limit;
+    std::string sub_offset;
+
     if(sub_where.empty() == false)sub_where = Format("where {}", m_where);
-    std::string query = x::Format("select {} from {} {}", m_select, m_table, sub_where);
+    if(m_orderby.empty() == false)sub_orderby = Format("order by {}", m_orderby);
+    if(m_limit > 0)sub_limit = Format("limit {}", m_limit);
+    if(m_offset > 0)sub_offset = Format("offset {}", m_offset);
+    std::string query = x::Format("select {} from {} {} {} {} {}", m_select, m_table, sub_where, m_orderby, sub_limit, sub_offset);
     std::cout << query << '\n';
     if(mysql_query(m_sql, query.c_str())){
         throw std::logic_error(Format("query error: {}", mysql_error(m_sql)));

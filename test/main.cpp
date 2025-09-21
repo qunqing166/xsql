@@ -27,19 +27,11 @@ int main()
         */
 
         // int val = con.Query().Delete("test").Where(x::QueryWhere().Equal("name", "none")).Execute();
-
-        int val = con.Query().Update("test", {{"age", 16}}).Where(x::QueryWhere().Equal("id", 1)).Execute();
-
-        if(val > 0)
-        {
-            std::cout << "success\n";
-        }
-        else 
-        {
-            std::cout << "error\n";
-        }
-
-        x::QueryResult res = con.Query().Select("test", {"id", "name", "age"}).Execute();
+       x::QueryResult res = con.Query().Select("test", {"id", "name", "age"})
+                                        .OrderBy("age")
+                                        .Limit(2)
+                                        .Offset(1)
+                                        .Execute();
         while(auto row = res.GetRow())
         {
             std::cout << x::Format("{} {} {}\n", 

@@ -38,32 +38,31 @@ private:
 class SelectQuery
 {
 public:
-    SelectQuery(MYSQL* sql, 
-                const std::string& table, 
-                const std::vector<std::string>& fields);
 
     SelectQuery& Where(const std::string& condition);
     SelectQuery& Where(const QueryWhere& condition);
 
-    SelectQuery& OrderBy(const std::string& field);
+    SelectQuery& OrderBy(const std::string& field, char order = 'a');
     SelectQuery& Limit(int count);
+    SelectQuery& Offset(int count);
 
     QueryResult Execute();
 
-protected:
-
-    void Generate();
-
 private:
 
-    std::string FormatFields(const std::vector<std::string>& fields);
+    SelectQuery(MYSQL* sql, const std::string& table, const std::vector<std::string>& fields);
 
 private:
+    
+    friend class SqlQuery;
+
     MYSQL* m_sql;
     std::string m_table;
     std::string m_select;
     std::string m_where;
-    std::string m_oderby;
+    std::string m_orderby;
+    int m_limit = -1;
+    int m_offset = -1;
 };
 
 class InsertQuery
