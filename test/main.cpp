@@ -47,6 +47,12 @@ class test:public TableBase<test>
         //auto data = repo.GetFirstOrDefault();
         auto datas = repo.GetAll();
 
+        test data;
+        data.SetId(100);
+        data.SetAge(100);
+        data.SetName("ciallo");
+        repo.Add(data);
+
         for(auto& it: datas)
         {
             std::cout   << "id: "   << it.GetId() << ' '
