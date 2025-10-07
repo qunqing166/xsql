@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -9,10 +9,12 @@ set(BUILD_TEST ON)
 project(x-sql)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/subpro/xformat)
+add_subdirectory(${PROJECT_SOURCE_DIR}/subpro/reflect)
 
 set(INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/subpro/xformat/include
+    ${PROJECT_SOURCE_DIR}/subpro/reflect/include
     /usr/include/mysql/
 )
 

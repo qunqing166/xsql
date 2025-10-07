@@ -1,6 +1,20 @@
+#include <cstdint>
+#include <filesystem>
 #include <iostream>
+#include <pthread.h>
 #include <string>
 #include "../include/utils.h"
+#include <SqlType.h>
+
+class test
+{
+   int8_t a;
+   int16_t b;
+   int32_t c;
+   int64_t d;
+   std::string e;
+   x::DateTime f;
+};
 
 int main()
 {

@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <cstdint>
 #include <string>
 #include <algorithm>
 
@@ -25,6 +26,47 @@ std::string ConvertSqlValue<std::string>(std::string_view str){
 
 }
 
+template <>
+std::string AnyValueConvert<std::string>(const std::string& value)
+{
+    return value;
+}
+
+template <>
+int8_t AnyValueConvert<int8_t>(const std::string& value)
+{
+    return std::stoll(value);
+}
+
+template <>
+int16_t AnyValueConvert<int16_t>(const std::string& value)
+{
+    return std::stoll(value);
+}
+
+template <>
+int32_t AnyValueConvert<int32_t>(const std::string& value)
+{
+    return std::stoll(value);
+}
+
+template <>
+int64_t AnyValueConvert<int64_t>(const std::string& value)
+{
+    return std::stoll(value);
+}
+
+template <>
+float AnyValueConvert<float>(const std::string& value)
+{
+    return std::stof(value);
+}
+
+template <>
+double AnyValueConvert<double>(const std::string& value)
+{
+    return std::stod(value);
+}
 
 //std::string InjectionCheck(const SqlInputValue& value){
 //    if(value.IsInt())return std::to_string(value.GetInt());

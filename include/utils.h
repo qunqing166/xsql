@@ -1,5 +1,6 @@
 #pragma once
 #include <charconv>
+#include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -41,5 +42,39 @@ template <typename T>
 constexpr T ConvertSqlValue(const std::string& val){
     return convert_detail::ConvertSqlValue<T>(val);
 }
+
+template <typename T>
+T AnyValueConvert(const std::string& value)
+{
+    throw std::logic_error("error type");
+    return T{};
+}
+
+template<typename T>
+std::string ConvertToString(T& value)
+{
+    using type = std::decay_t<T>;
+    if constexpr(std::is_same_v<type, bool>){
+        return value ? "true" : "false";
+    }else if constexpr(std::is_same_v<type, char>){
+        return value;
+    }else if constexpr(std::is_integral_v<type>){
+        return std::to_string(value);
+        // if constexpr(std::is_signed_v<type>){
+        //     return var(static_cast<int64_t>(value));
+        // }else{
+        //     return var(static_cast<uint64_t>(value));
+        // }
+    }else if constexpr(std::is_floating_point_v<type>){
+        return std::to_string(value);
+    }else if constexpr(std::is_convertible_v<type, std::string>){
+        return value;
+    }else{
+        static_assert(sizeof(T) == 0, "unsupported type");
+    }
+    return std::string();
+}
+
+
 
 }
