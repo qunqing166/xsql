@@ -3,8 +3,10 @@
 #include <iostream>
 #include <pthread.h>
 #include <string>
-#include "../include/utils.h"
+#include "utils.h"
 #include <SqlType.h>
+
+using namespace xsql;
 
 class test
 {
@@ -13,19 +15,19 @@ class test
    int32_t c;
    int64_t d;
    std::string e;
-   x::DateTime f;
+   DateTime f;
 };
 
 int main()
 {
 
-    int num1 = x::ConvertSqlValue<int>("123");
-    int num2 = x::ConvertSqlValue<int>("12.3");
-    int num3 = x::ConvertSqlValue<int>("1aa23");
-    double num4 = x::ConvertSqlValue<double>("12.3");
-    float num5 = x::ConvertSqlValue<float>("12.32");
+    int num1 = ConvertSqlValue<int>("123");
+    int num2 = ConvertSqlValue<int>("12.3");
+    int num3 = ConvertSqlValue<int>("1aa23");
+    double num4 = ConvertSqlValue<double>("12.3");
+    float num5 = ConvertSqlValue<float>("12.32");
 
-    std::cout << x::ConvertSqlValue<std::string>("ciallo") << "\n";
+    std::cout << ConvertSqlValue<std::string>("ciallo") << "\n";
 
     std::cout   << num1 << '\n'
                 << num1 << '\n'

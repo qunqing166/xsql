@@ -6,7 +6,7 @@
 #include "QueryResult.h"
 #include "SqlValue.h"
 
-namespace x
+namespace xsql
 {
 
 using FieldAndValue = std::pair<std::string, SqlInputValue>;

@@ -5,7 +5,7 @@
 #include <mysql/field_types.h>
 #include <string>
 
-namespace x{
+namespace xsql{
 
 FieldMeta::FieldMeta(const std::string& name, const std::string& type):
     m_name(name), m_typeStr(type){

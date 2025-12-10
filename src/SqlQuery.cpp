@@ -1,12 +1,12 @@
-#include "SqlQuery.h"
-#include "QueryResult.h"
-#include "xformat.h"
+#include <SqlQuery.h>
+#include <QueryResult.h>
+#include <Format.h>
 #include <cstdint>
 #include <mysql/mysql.h>
 #include <stdexcept>
 #include <string>
 
-namespace x{
+namespace xsql{
 
 /**************************************************/
 
@@ -72,7 +72,7 @@ SelectQuery& SelectQuery::OrderBy(const std::string& field, char order)
     std::string str;
     if(order == 'd')str = "desc";
     else if(order == 'a')str = "asc";
-    m_orderby = Format("order by {} {}", field, str);
+    m_orderby = XSqlFormat("order by {} {}", field, str);
     return *this;
 } 
 
@@ -95,14 +95,14 @@ QueryResult SelectQuery::Execute()
     std::string sub_limit;
     std::string sub_offset;
 
-    if(sub_where.empty() == false)sub_where = Format("where {}", m_where);
-    if(m_orderby.empty() == false)sub_orderby = Format("order by {}", m_orderby);
-    if(m_limit > 0)sub_limit = Format("limit {}", m_limit);
-    if(m_offset > 0)sub_offset = Format("offset {}", m_offset);
-    std::string query = x::Format("select {} from {} {} {} {} {}", m_select, m_table, sub_where, m_orderby, sub_limit, sub_offset);
+    if(sub_where.empty() == false)sub_where = XSqlFormat("where {}", m_where);
+    if(m_orderby.empty() == false)sub_orderby = XSqlFormat("order by {}", m_orderby);
+    if(m_limit > 0)sub_limit = XSqlFormat("limit {}", m_limit);
+    if(m_offset > 0)sub_offset = XSqlFormat("offset {}", m_offset);
+    std::string query = XSqlFormat("select {} from {} {} {} {} {}", m_select, m_table, sub_where, m_orderby, sub_limit, sub_offset);
     std::cout << query << '\n';
     if(mysql_query(m_sql, query.c_str())){
-        throw std::logic_error(Format("query error: {}", mysql_error(m_sql)));
+        throw std::logic_error(XSqlFormat("query error: {}", mysql_error(m_sql)));
     }
     return QueryResult(m_sql);
 }
@@ -124,17 +124,17 @@ InsertQuery::InsertQuery(MYSQL* sql, const std::string& table, const std::vector
 
     while(++begin != fieldAndValues.end())
     {
-        m_fields += Format(",{}", begin->first);
-        m_values += Format(",{}", begin->second.Get());
+        m_fields += XSqlFormat(",{}", begin->first);
+        m_values += XSqlFormat(",{}", begin->second.Get());
     }
 }
 
 int InsertQuery::Execute()
 {
-    std::string query = Format("insert into {} ({}) values ({})", m_table, m_fields, m_values);
+    std::string query = XSqlFormat("insert into {} ({}) values ({})", m_table, m_fields, m_values);
     if(mysql_query(m_sql, query.c_str()))
     {
-        throw std::logic_error(Format("insert: mysql_query error, {}", mysql_error(m_sql)));
+        throw std::logic_error(XSqlFormat("insert: mysql_query error, {}", mysql_error(m_sql)));
     }
     
     int val = mysql_affected_rows(m_sql);
@@ -154,21 +154,21 @@ UpdateQuery::UpdateQuery(MYSQL* sql, const std::string& table, const std::vector
     {
         throw std::logic_error("update: field and value can not be empty");
     }
-    m_fieldAndValue = Format("{}={}", begin->first, begin->second.Get());
+    m_fieldAndValue = XSqlFormat("{}={}", begin->first, begin->second.Get());
     while(++begin != fieldAndValue.end())
     {
-        m_fieldAndValue += Format(",{}={}", begin->first, begin->second.Get());
+        m_fieldAndValue += XSqlFormat(",{}={}", begin->first, begin->second.Get());
     }
 }
 
 int UpdateQuery::Execute()
 {
-    if(m_where.empty() == false)m_where = Format("where {}", m_where);
-    std::string query = Format("update {} set {} {}", m_table, m_fieldAndValue, m_where);
+    if(m_where.empty() == false)m_where = XSqlFormat("where {}", m_where);
+    std::string query = XSqlFormat("update {} set {} {}", m_table, m_fieldAndValue, m_where);
     std::cout << query << '\n';
     if(mysql_query(m_sql, query.c_str()))
     {
-        throw std::logic_error(Format("update: mysql_query error, {}", mysql_error(m_sql)));
+        throw std::logic_error(XSqlFormat("update: mysql_query error, {}", mysql_error(m_sql)));
     }
     
     int val = mysql_affected_rows(m_sql);
@@ -211,11 +211,11 @@ DeleteQuery& DeleteQuery::Where(const QueryWhere& condition)
 
 int DeleteQuery::Execute()
 {
-    if(m_where.empty() == false)m_where = Format("where {}", m_where);
-    std::string query = Format("delete from {} {}", m_table, m_where);
+    if(m_where.empty() == false)m_where = XSqlFormat("where {}", m_where);
+    std::string query = XSqlFormat("delete from {} {}", m_table, m_where);
     if(mysql_query(m_sql, query.c_str()))
     {
-        throw std::logic_error(Format("delete: mysql_query error, {}", mysql_error(m_sql)));
+        throw std::logic_error(XSqlFormat("delete: mysql_query error, {}", mysql_error(m_sql)));
     }
     
     int val = mysql_affected_rows(m_sql);

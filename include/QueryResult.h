@@ -6,7 +6,7 @@
 #include <utils.h>
 #include <memory>
 
-namespace x{
+namespace xsql{
 
 
 using FieldIndex = std::unordered_map<std::string, int>;

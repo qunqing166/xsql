@@ -3,7 +3,7 @@
 #include <memory>
 #include <stdexcept>
 
-namespace x{
+namespace xsql{
 
 QueryResult::QueryResult(MYSQL *sql):
     m_sql(sql)

@@ -8,11 +8,12 @@ set(BUILD_TEST ON)
 
 project(x-sql)
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/subpro/xformat)
+add_subdirectory(${PROJECT_SOURCE_DIR}/third_part/xformat)
 
 set(INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/subpro/xformat/include
+    ${PROJECT_SOURCE_DIR}/include/utils
+    ${PROJECT_SOURCE_DIR}/third_part/xformat/include
     /usr/include/mysql/
 )
 

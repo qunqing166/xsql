@@ -3,7 +3,7 @@
 #include <vector>
 #include <QueryCondition.h>
 
-namespace x{
+namespace xsql{
 
 template <typename T>
 class IRepositoryBase

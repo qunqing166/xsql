@@ -1,10 +1,10 @@
 #include <SqlType.h>
 #include <cstdint>
 #include <string>
-#include <xformat.h>
+#include <Format.h>
 #include <chrono>
 
-namespace x{
+namespace xsql{
 
 DateTime::DateTime():
     m_ts(0)
@@ -24,7 +24,7 @@ std::string DateTime::ToString(const std::string& format)
     auto time_t_now = std::chrono::system_clock::to_time_t(tp);
     std::tm tm{};
     localtime_r(&time_t_now, &tm);
-    return Format("{}-{}-{} {}:{}:{}", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    return XSqlFormat("{}-{}-{} {}:{}:{}", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
 }
 
 DateTime DateTime::Now()

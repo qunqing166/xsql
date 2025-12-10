@@ -2,7 +2,7 @@
 
 #include <exception>
 
-namespace x{
+namespace xsql{
 
 class ParamError: public std::exception
 {

@@ -1,4 +1,4 @@
-[submodule "subpro/xformat"]
-	path = subpro/xformat
+[submodule "third_part/xformat"]
+	path = third_part/xformat
 	url = https://github.com/qunqing166/xformat.git
 	branch = main

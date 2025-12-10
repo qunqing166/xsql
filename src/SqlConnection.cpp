@@ -3,7 +3,7 @@
 #include <mysql/mysql.h>
 #include <stdexcept>
 
-namespace x{
+namespace xsql{
 
 
 SqlConnection::SqlConnection(   const std::string& user, 

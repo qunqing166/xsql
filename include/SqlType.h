@@ -2,7 +2,8 @@
 
 #include <cstdint>
 #include <string>
-namespace x{
+
+namespace xsql{
 
 class DateTime
 {

@@ -7,10 +7,10 @@
 #include <SqlQuery.h>
 #include <optional>
 #include <string>
-#include <TableBase.h>
+#include <EntityBase.h>
 #include <SqlConnection.h>
 
-namespace x{
+namespace xsql{
 
 template <typename T>
 class CommonRepository: public IRepositoryBase<T>
@@ -25,7 +25,7 @@ public:
     std::optional<T> GetFirstOrDefault(const QueryWhere& where = QueryWhere()) override
     {
         T ret{};
-        TableBase<T>& base = ret;
+        EntityBase<T>& base = ret;
         std::vector<std::string> fields = base.GetFields();
         QueryResult res = m_con->Query().Select(T::GetTableName(), fields).Where(where).Limit(1).Execute();
         if(auto row = res.GetRow())

@@ -9,7 +9,7 @@
 #include <variant>
 #include <type_traits>
 
-namespace x{
+namespace xsql{
 
 class SqlOutputValue
 {

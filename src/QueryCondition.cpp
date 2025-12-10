@@ -1,7 +1,7 @@
 #include "QueryCondition.h"
 #include "SqlValue.h"
 
-namespace x{
+namespace xsql{
 
 void QueryWhere::CompareDetail( const std::string& filed, const SqlInputValue& value, 
                                 const std::string op){

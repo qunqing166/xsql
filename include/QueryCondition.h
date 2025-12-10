@@ -5,7 +5,7 @@
 #include <vector>
 #include <list>
 
-namespace x
+namespace xsql
 {
 
 class QueryWhere

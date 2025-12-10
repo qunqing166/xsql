@@ -9,11 +9,13 @@
 #include <mysql/mysql.h>
 #include "SqlQuery.h"
 #include "xformat.h"
-#include <TableBase.h>
+#include <EntityBase.h>
 #include <SqlType.h>
 #include <CommonRepository.h>
 
-class People: public TableBase<People>
+using namespace xsql;
+
+class People: public EntityBase<People>
 {
     FIELD_REGISTER(int, Id);
     FIELD_REGISTER(std::string, Name);
@@ -33,7 +35,7 @@ int main()
 
 void test3()
 {
-class test:public TableBase<test>
+class test:public xsql::EntityBase<test>
 {
     FIELD_REGISTER(int, Id);
     FIELD_REGISTER(std::string, Name);
@@ -42,8 +44,8 @@ class test:public TableBase<test>
 
 
     try{
-        std::shared_ptr<x::SqlConnection> con = std::make_shared<x::SqlConnection>("root", "114514", "test");
-        x::CommonRepository<test> repo(con);
+        std::shared_ptr<SqlConnection> con = std::make_shared<SqlConnection>("root", "114514", "test");
+        CommonRepository<test> repo(con);
         //auto data = repo.GetFirstOrDefault();
         auto datas = repo.GetAll();
 
@@ -66,7 +68,7 @@ class test:public TableBase<test>
 
 void test2()
 {
-    x::DateTime dt = x::DateTime::Now();
+    DateTime dt = DateTime::Now();
     std::cout << dt.ToString() << "\n";
 }
 
@@ -86,7 +88,7 @@ void test1()
 void test0()
 {
     try{
-        x::SqlConnection con("root", "114514", "test");
+        SqlConnection con("root", "114514", "test");
 
         /*
         int val = con.Query().Insert("test", {  {"id", "3"},
@@ -101,7 +103,7 @@ void test0()
         */
 
         // int val = con.Query().Delete("test").Where(x::QueryWhere().Equal("name", "none")).Execute();
-       x::QueryResult res = con.Query().Select("test", {"id", "name", "age"})
+       QueryResult res = con.Query().Select("test", {"id", "name", "age"})
                                         .OrderBy("age")
                                         .Limit(2)
                                         .Offset(1)

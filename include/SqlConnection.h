@@ -4,7 +4,7 @@
 #include <string>
 #include "SqlQuery.h"
 
-namespace x{
+namespace xsql{
 
 class SqlConnection
 {

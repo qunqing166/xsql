@@ -4,14 +4,13 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#include <xformat.h>
+#include <Format.h>
 
-namespace x{
+namespace xsql{
 
 std::string InjectionCheck(const std::string& input);
 
 namespace convert_detail{
-
 
 /* 判断是否是算术类型 */
 /*
@@ -25,7 +24,7 @@ constexpr T ConvertSqlValue(std::string_view str){
     T value;
     auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
     if(ec == std::errc{} )return value;
-    throw std::logic_error(Format("convert to '{}' error", typeid(T).name()));
+    throw std::logic_error(XSqlFormat("convert to '{}' error", typeid(T).name()));
 }
 
 /* 字符串类型的特化 */

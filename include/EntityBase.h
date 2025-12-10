@@ -12,10 +12,10 @@
 #include <cxxabi.h>
 #include <utils.h>
 
-//namespace x{
+namespace xsql{
 
 template <class T>
-class TableBase
+class EntityBase
 {
 public:
     using class_name = T;
@@ -94,10 +94,10 @@ private:
 
 //}
 
-#define FIELD_REGESTER(type, property, setter, getter)  \
+#define REGISTER_WITHOUT_VALUE(type, property, setter, getter)  \
         Register<type>(#property, setter, getter)
 
-#define FIELD_REGESTER_WITH_VALUE(type, property, setter, getter, default_)  \
+#define REGISTER_WITH_VALUE(type, property, setter, getter, default_)  \
         Register<type>(#property, setter, getter, default_)
 
 
@@ -106,17 +106,19 @@ private:
             type Get##property() const{return m_##property;}\
             void Set##property(const type& value){m_##property = value;}\
         private:\
-            std::string Get##property##_(){return x::ConvertToString<type>(m_##property);}\
-            void Set##property##_(const std::string& value){m_##property = x::ConvertSqlValue<type>(value);}\
+            std::string Get##property##_(){return xsql::ConvertToString<type>(m_##property);}\
+            void Set##property##_(const std::string& value){m_##property = xsql::ConvertSqlValue<type>(value);}\
         private:\
-            type m_##property = FIELD_REGESTER(type, property, &class_name::Get##property##_, &class_name::Set##property##_);
+            type m_##property = REGISTER_WITHOUT_VALUE(type, property, &class_name::Get##property##_, &class_name::Set##property##_);
 
 #define FIELD_REGISTER_WITH_VALUE(type, property, default_)\
         public:\
             type Get##property() const{return m_##property;}\
             void Set##property(const type& value){m_##property = value;}\
         private:\
-            std::string Get##property##_(){return x::ConvertToString<type>(m_##property);}\
-            void Set##property##_(const std::string& value){m_##property = x::ConvertSqlValue<type>(value);}\
+            std::string Get##property##_(){return xsql::ConvertToString<type>(m_##property);}\
+            void Set##property##_(const std::string& value){m_##property = xsql::ConvertSqlValue<type>(value);}\
         private:\
-            type m_##property = FIELD_REGESTER_WITH_VALUE(type, property, &class_name::Get##property##_, &class_name::Set##property##_, default_);
+            type m_##property = REGISTER_WITH_VALUE(type, property, &class_name::Get##property##_, &class_name::Set##property##_, default_);
+
+}
