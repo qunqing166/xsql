@@ -24,12 +24,17 @@ QueryResultRow QueryResult::GetRow(){
     return QueryResultRow(mysql_fetch_row(m_res), m_fieldIndex);
 }
 
+int QueryResult::RowCount()
+{
+    return mysql_num_rows(m_res);
+}
+
 void QueryResult::GetFieldIndex(){
     m_fieldIndex = std::make_shared<FieldIndex>();
     MYSQL_FIELD* field;
     int index = 0;
     while((field = mysql_fetch_field(m_res))){
-        std::cout << field->name << '\n';
+        // std::cout << field->name << '\n';
         m_fieldIndex->insert({std::string(field->name), index++});
     }
 }

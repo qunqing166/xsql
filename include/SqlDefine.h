@@ -29,7 +29,7 @@ public:
 
     enum Constraint{
         NONE = 0,
-        CAN_BE_NULL = 1,
+        NOT_NULL = 1,
         AUTO_INCREMENT = 2,
         IS_UNIQUE = 4
     };

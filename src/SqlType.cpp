@@ -59,7 +59,7 @@ DateTime::DateTime(const std::string &str)
 //         tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, m_ts % 1000);
 // }
 
-std::string DateTime::ToString(bool withMs)
+std::string DateTime::ToString(bool withMs) const
 {
     std::chrono::milliseconds dur(m_ts);
     std::chrono::system_clock::time_point tp = std::chrono::time_point<std::chrono::system_clock>(dur);
@@ -68,7 +68,8 @@ std::string DateTime::ToString(bool withMs)
     localtime_r(&time_t_now, &tm);
     if(withMs){
         return XSqlFormat("{}-{}-{} {}:{}:{}.{}", 
-            tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, m_ts % 1000);
+            tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, 
+            tm.tm_hour, tm.tm_min, tm.tm_sec, m_ts % 1000);
     }else{
         return XSqlFormat("{}-{}-{} {}:{}:{}", 
             tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);

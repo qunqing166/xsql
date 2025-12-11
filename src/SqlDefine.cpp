@@ -90,7 +90,8 @@ void CreateTable::FormatTableStruct(std::stringstream &ss, const CreateTable::Fi
     ss  << '\t'
         << des.Filed << ' '
         << des.Type;
-    if(des.Constrain & Constraint::IS_UNIQUE)ss << " not null";
+    if(des.Constrain & Constraint::NOT_NULL)ss << " not null";
+    if(des.Constrain & Constraint::IS_UNIQUE)ss << " unique";
     if(des.Constrain & Constraint::AUTO_INCREMENT)ss << " auto_increment";
     if(des.Constrain & Constraint::AUTO_INCREMENT == 0 && des.Default.empty() == false)ss << " default " << des.Default;
     if(des.Description.empty() == false)ss << " comment '" << des.Description << "'";

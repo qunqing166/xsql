@@ -52,6 +52,7 @@ public:
     ~QueryResult();
 
     QueryResultRow GetRow();
+    int RowCount();
 
 private:
     

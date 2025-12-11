@@ -100,7 +100,6 @@ QueryResult SelectQuery::Execute()
     if(m_limit > 0)sub_limit = XSqlFormat("limit {}", m_limit);
     if(m_offset > 0)sub_offset = XSqlFormat("offset {}", m_offset);
     std::string query = XSqlFormat("select {} from {} {} {} {} {}", m_select, m_table, sub_where, m_orderby, sub_limit, sub_offset);
-    std::cout << query << '\n';
     if(mysql_query(m_sql, query.c_str())){
         throw std::logic_error(XSqlFormat("query error: {}", mysql_error(m_sql)));
     }
@@ -132,6 +131,7 @@ InsertQuery::InsertQuery(MYSQL* sql, const std::string& table, const std::vector
 int InsertQuery::Execute()
 {
     std::string query = XSqlFormat("insert into {} ({}) values ({})", m_table, m_fields, m_values);
+
     if(mysql_query(m_sql, query.c_str()))
     {
         throw std::logic_error(XSqlFormat("insert: mysql_query error, {}", mysql_error(m_sql)));
@@ -213,6 +213,7 @@ int DeleteQuery::Execute()
 {
     if(m_where.empty() == false)m_where = XSqlFormat("where {}", m_where);
     std::string query = XSqlFormat("delete from {} {}", m_table, m_where);
+
     if(mysql_query(m_sql, query.c_str()))
     {
         throw std::logic_error(XSqlFormat("delete: mysql_query error, {}", mysql_error(m_sql)));

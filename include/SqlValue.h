@@ -8,6 +8,7 @@
 #include <map>
 #include <variant>
 #include <type_traits>
+#include <SqlType.h>
 
 namespace xsql{
 
@@ -48,11 +49,27 @@ public:
         }
     }
 
+    SqlInputValue(xsql::DateTime&& value):
+        m_val(value)
+    {
+    }
+
+    SqlInputValue(xsql::DateTime& value):
+        m_val(value)
+    {
+    }
+
     std::string Get() const{
-        if(m_val.index() == 0)return std::to_string(std::get<int64_t>(m_val));
-        if(m_val.index() == 1)return std::to_string(std::get<double>(m_val));
-        if(m_val.index() != 2)throw std::logic_error("SqlInputValue get error");
-        std::string ret = std::get<std::string>(m_val);
+        std::string ret;
+        switch(m_val.index())
+        {
+        case 0:return std::to_string(std::get<int64_t>(m_val));
+        case 1:return std::to_string(std::get<double>(m_val));
+        case 2:ret = std::get<std::string>(m_val);break;
+        case 3:ret = std::get<xsql::DateTime>(m_val).ToString();break;
+        default:throw std::logic_error("SqlInputValue get error");
+        }
+
         for(int i = ret.length() - 1; i >=0; --i){
             if(ret[i] == '\''){
                 ret.insert(ret.begin() + i, '\'');
@@ -71,7 +88,7 @@ public:
     std::string GetString() const{return std::get<std::string>(m_val);}
 
 private:
-    using value = std::variant<int64_t, double, std::string>;
+    using value = std::variant<int64_t, double, std::string, xsql::DateTime>;
     value m_val;
 };
 
