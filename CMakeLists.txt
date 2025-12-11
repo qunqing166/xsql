@@ -30,10 +30,6 @@ add_library(xsql STATIC ${SRC_LIST})
 add_library(xsql::lib ALIAS xsql)
 target_link_libraries(xsql PRIVATE xformat::static)
 
-add_executable (main test/main.cpp)
-target_link_libraries(main PRIVATE xsql::lib ) 
-target_link_libraries(main PRIVATE ${LIBS})
-
 if(BUILD_TESTS)
     include(FetchContent)
     FetchContent_Declare(
@@ -52,6 +48,13 @@ if(BUILD_TESTS)
     target_link_libraries(test_xsql PRIVATE xsql::lib ) 
     target_link_libraries(test_xsql PRIVATE ${LIBS} GTest::gtest_main)
     target_include_directories(test_xsql PRIVATE ${GoogleTest_SOURCE_DIR}/include)
+
+    include(GoogleTest)
+
+    add_executable (test_repository test/test_repository.cpp)
+    target_link_libraries(test_repository PRIVATE xsql::lib ) 
+    target_link_libraries(test_repository PRIVATE ${LIBS} GTest::gtest_main)
+    target_include_directories(test_repository PRIVATE ${GoogleTest_SOURCE_DIR}/include)
 
     include(GoogleTest)
     
