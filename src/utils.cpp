@@ -9,11 +9,10 @@ namespace convert_detail{
 
 template <>
 bool ConvertSqlValue<bool>(std::string_view str){
-    // 去除大小写敏感
     std::string val(str.length(), '0');
     std::transform(str.begin(), str.end(), val.begin(), ::tolower);
-    if (str == "true"  || str == "1" || str == "yes" || str == "on")  return true;
-    if (str == "false" || str == "0" || str == "no"  || str == "off") return false;
+    if (val == "true"  || val == "1" || val == "yes" || val == "on")  return true;
+    if (val == "false" || val == "0" || val == "no"  || val == "off") return false;
     throw std::logic_error("convert to 'bool' error");
 }
 
@@ -24,6 +23,16 @@ std::string ConvertSqlValue<std::string>(std::string_view str){
 }
 
 
+}
+
+template <>
+std::string ConvertSqlValue(const std::string& val){
+    return val;
+}
+
+template <>
+xsql::DateTime ConvertSqlValue(const std::string& val){
+    return xsql::DateTime(val);
 }
 
 template <>

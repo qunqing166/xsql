@@ -5,6 +5,7 @@
 #include <string>
 #include <string_view>
 #include <Format.h>
+#include <SqlType.h>
 
 namespace xsql{
 
@@ -21,9 +22,12 @@ inline constexpr bool is_arithmetic_v = std::is_arithmetic_v<T> && (std::is_same
 /* 用作算术类型的转换 */
 template <typename T = std::string>
 constexpr T ConvertSqlValue(std::string_view str){
-    T value;
+    T value{};
     auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
-    if(ec == std::errc{} )return value;
+
+    if( (ptr != str.data()) &&
+        ((ec == std::errc{} && ptr == str.data() + str.size()) || 
+        (ptr != str.data() + str.size() && *ptr == '.')))return value;
     throw std::logic_error(XSqlFormat("convert to '{}' error", typeid(T).name()));
 }
 
@@ -41,6 +45,12 @@ template <typename T>
 constexpr T ConvertSqlValue(const std::string& val){
     return convert_detail::ConvertSqlValue<T>(val);
 }
+
+template <>
+std::string ConvertSqlValue(const std::string& val);
+
+template <>
+xsql::DateTime ConvertSqlValue(const std::string& val);
 
 template <typename T>
 T AnyValueConvert(const std::string& value)

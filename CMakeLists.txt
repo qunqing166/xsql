@@ -4,7 +4,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
 
-set(BUILD_TEST ON)
+set(BUILD_TESTS ON)
+# option(BUILD_TESTS "build tests" ON)
 
 project(x-sql)
 
@@ -33,12 +34,21 @@ add_executable (main test/main.cpp)
 target_link_libraries(main PRIVATE xsql::lib ) 
 target_link_libraries(main PRIVATE ${LIBS})
 
-if(BUILD_TEST)
+if(BUILD_TESTS)
+    include(FetchContent)
+    FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY git@github.com:google/googletest.git
+        GIT_TAG        v1.14.0
+    )
+    FetchContent_MakeAvailable(googletest)
 
     add_executable (test_convert test/test_convert.cpp)
     target_link_libraries(test_convert PRIVATE xsql::lib ) 
-    target_link_libraries(test_convert PRIVATE ${LIBS})
-
+    target_link_libraries(test_convert PRIVATE ${LIBS} GTest::gtest_main)
+    target_include_directories(test_convert PRIVATE ${GoogleTest_SOURCE_DIR}/include)
+    include(GoogleTest)
+    
 endif()
 
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
