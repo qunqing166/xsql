@@ -84,6 +84,9 @@ std::string ConvertToString(T& value)
     return std::string();
 }
 
+template<>
+std::string ConvertToString(DateTime& value);
+
 
 
 }

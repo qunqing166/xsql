@@ -77,6 +77,12 @@ double AnyValueConvert<double>(const std::string& value)
     return std::stod(value);
 }
 
+template<>
+std::string ConvertToString(DateTime& value)
+{
+    return value.ToString();
+}
+
 //std::string InjectionCheck(const SqlInputValue& value){
 //    if(value.IsInt())return std::to_string(value.GetInt());
 //    if(value.IsFloat())return std::to_string(value.GetFloat());
