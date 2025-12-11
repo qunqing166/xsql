@@ -5,6 +5,7 @@
 #include <mysql/mysql.h>
 #include <stdexcept>
 #include <string>
+#include <Debug.h>
 
 namespace xsql{
 
@@ -165,7 +166,9 @@ int UpdateQuery::Execute()
 {
     if(m_where.empty() == false)m_where = XSqlFormat("where {}", m_where);
     std::string query = XSqlFormat("update {} set {} {}", m_table, m_fieldAndValue, m_where);
-    std::cout << query << '\n';
+    
+    XSQL_DEBUG("update query: {}", query);
+
     if(mysql_query(m_sql, query.c_str()))
     {
         throw std::logic_error(XSqlFormat("update: mysql_query error, {}", mysql_error(m_sql)));
