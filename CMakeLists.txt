@@ -47,6 +47,12 @@ if(BUILD_TESTS)
     target_link_libraries(test_convert PRIVATE xsql::lib ) 
     target_link_libraries(test_convert PRIVATE ${LIBS} GTest::gtest_main)
     target_include_directories(test_convert PRIVATE ${GoogleTest_SOURCE_DIR}/include)
+
+    add_executable (test_xsql test/test_xsql.cpp)
+    target_link_libraries(test_xsql PRIVATE xsql::lib ) 
+    target_link_libraries(test_xsql PRIVATE ${LIBS} GTest::gtest_main)
+    target_include_directories(test_xsql PRIVATE ${GoogleTest_SOURCE_DIR}/include)
+
     include(GoogleTest)
     
 endif()
