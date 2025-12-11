@@ -3,6 +3,7 @@
 #include <mysql/mysql.h>
 #include <string>
 #include "SqlQuery.h"
+#include <SqlDefine.h>
 
 namespace xsql{
 
@@ -16,7 +17,15 @@ public:
                     uint16_t port = 0, 
                     int conCount = 1);
 
+    static std::shared_ptr<SqlConnection> Create(   const std::string& user, 
+                                                    const std::string& passwd, 
+                                                    const std::string& dbName, 
+                                                    const std::string& host = "localhost", 
+                                                    uint16_t port = 0, 
+                                                    int conCount = 1);
+
     SqlQuery Query();
+    SqlDefine Define();
 
 private:
     std::list<MYSQL*> m_sqls;

@@ -32,9 +32,17 @@ SqlConnection::SqlConnection(   const std::string& user,
     }
 }
 
+std::shared_ptr<SqlConnection> SqlConnection::Create(const std::string &user, const std::string &passwd, const std::string &dbName, const std::string &host, uint16_t port, int conCount)
+{
+    return std::make_shared<SqlConnection>(user, passwd, dbName, host, port, conCount);
+}
+
 SqlQuery SqlConnection::Query(){
     return SqlQuery(m_sqls.front());   
 }
 
-
+SqlDefine SqlConnection::Define()
+{
+    return SqlDefine(m_sqls.front());
+}
 }
