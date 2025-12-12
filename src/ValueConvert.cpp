@@ -1,4 +1,4 @@
-#include <utils.h>
+#include <ValueConvert.h>
 #include <cstdint>
 #include <string>
 #include <algorithm>
@@ -82,17 +82,5 @@ std::string ConvertToString(DateTime& value)
 {
     return XSqlFormat("'{}'", value.ToString());
 }
-
-//std::string InjectionCheck(const SqlInputValue& value){
-//    if(value.IsInt())return std::to_string(value.GetInt());
-//    if(value.IsFloat())return std::to_string(value.GetFloat());
-//    std::string ret = std::get<std::string>(value);
-//    for(int i = ret.length() - 1; i >=0; --i){
-//        if(ret[i] == '\''){
-//            ret.insert(ret.begin() + i, '\'');
-//        }
-//    }
-//    return ret;
-//}
 
 }
