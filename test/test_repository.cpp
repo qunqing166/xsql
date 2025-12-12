@@ -61,8 +61,5 @@ TEST(test_repository, curd)
         EXPECT_EQ(res->GetAge(), 20);
     }
 
-    res->SetName("qunqing");
-    res->SetAge(20);
-
-    EXPECT_EQ(con->Define().DropTable("user").Execute(), true);
+    EXPECT_EQ(con->Define().DropTable("User").Execute(), true);
 }
