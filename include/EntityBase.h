@@ -11,6 +11,7 @@
 #include <memory>
 #include <cxxabi.h>
 #include <utils.h>
+#include <SqlValue.h>
 
 namespace xsql{
 
@@ -22,7 +23,7 @@ public:
     using Getter = std::function<std::string(T*)>;
     using Setter = std::function<void(T*, const std::string&)>;
 
-    std::string Get(const std::string& field) const
+    InputString Get(const std::string& field) const
     {
         auto it = m_table.find(field);
         if(it == m_table.end())return std::string();

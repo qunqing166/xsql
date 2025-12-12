@@ -66,7 +66,8 @@ std::string ConvertToString(T& value)
     if constexpr(std::is_same_v<type, bool>){
         return value ? "true" : "false";
     }else if constexpr(std::is_same_v<type, char>){
-        return value;
+        // return value;
+        return XSqlFormat("'{}'", value);
     }else if constexpr(std::is_integral_v<type>){
         return std::to_string(value);
         // if constexpr(std::is_signed_v<type>){
@@ -77,7 +78,7 @@ std::string ConvertToString(T& value)
     }else if constexpr(std::is_floating_point_v<type>){
         return std::to_string(value);
     }else if constexpr(std::is_convertible_v<type, std::string>){
-        return value;
+        return XSqlFormat("'{}'", value);
     }else{
         static_assert(sizeof(T) == 0, "unsupported type");
     }

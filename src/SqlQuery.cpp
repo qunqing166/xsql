@@ -132,7 +132,7 @@ InsertQuery::InsertQuery(MYSQL* sql, const std::string& table, const std::vector
 int InsertQuery::Execute()
 {
     std::string query = XSqlFormat("insert into {} ({}) values ({})", m_table, m_fields, m_values);
-
+    XSQL_DEBUG("insert query: {}", query);
     if(mysql_query(m_sql, query.c_str()))
     {
         throw std::logic_error(XSqlFormat("insert: mysql_query error, {}", mysql_error(m_sql)));

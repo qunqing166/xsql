@@ -12,6 +12,17 @@
 
 namespace xsql{
 
+class InputString
+{
+public:
+    InputString(const std::string& val):m_val(val){}
+
+    const std::string& Get() const{return m_val;}
+
+private:
+    std::string m_val;
+};
+
 class SqlOutputValue
 {
 public:
@@ -38,6 +49,8 @@ public:
             m_val = (bool(value));
         }else if constexpr(std::is_same_v<type, char>){
             m_val = char(value);
+        }else if constexpr(std::is_same_v<type, InputString>){
+            m_val = InputString(value);
         }else if constexpr(std::is_integral_v<type>){
             m_val = static_cast<int64_t>(value);
         }else if constexpr(std::is_floating_point_v<type>){
@@ -65,8 +78,9 @@ public:
         {
         case 0:return std::to_string(std::get<int64_t>(m_val));
         case 1:return std::to_string(std::get<double>(m_val));
-        case 2:ret = std::get<std::string>(m_val);break;
-        case 3:ret = std::get<xsql::DateTime>(m_val).ToString();break;
+        case 2:return std::get<InputString>(m_val).Get();
+        case 3:ret = std::get<std::string>(m_val);break;
+        case 4:ret = std::get<xsql::DateTime>(m_val).ToString();break;
         default:throw std::logic_error("SqlInputValue get error");
         }
 
@@ -88,7 +102,7 @@ public:
     std::string GetString() const{return std::get<std::string>(m_val);}
 
 private:
-    using value = std::variant<int64_t, double, std::string, xsql::DateTime>;
+    using value = std::variant<int64_t, double, InputString, std::string, xsql::DateTime>;
     value m_val;
 };
 
