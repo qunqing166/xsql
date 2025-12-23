@@ -1,6 +1,6 @@
 #include "SqlDefine.h"
 #include <sstream>
-#include <Format.h>
+#include <format>
 
 namespace xsql{
 
@@ -69,19 +69,19 @@ std::string CreateTable::GetString()
 
 CreateTable &CreateTable::AddPrimaryKey(const std::string &field)
 {
-    m_keys.insert({field, XSqlFormat("primary key({})", field)});
+    m_keys.insert({field, std::format("primary key({})", field)});
     return *this;
 }
 
 // CreateTable &CreateTable::AddUniqueKey(const std::string &field, const std::string &name)
 // {
-//     m_keys.push_back(XSqlFormat("unique key {} ({})", name, field));
+//     m_keys.push_back(std::format("unique key {} ({})", name, field));
 //     return *this;
 // }
 
 // CreateTable & CreateTable::AddKey(const std::string & field, const std::string & name)
 // {
-//     m_keys.push_back(XSqlFormat("key {} ({})", name, field));
+//     m_keys.push_back(std::format("key {} ({})", name, field));
 //     return *this;
 // }
 
@@ -105,7 +105,7 @@ CreateTable::CreateTable(MYSQL *sql, const std::string &table):
 bool DropTable::Execute()
 {
     // return false;
-    return mysql_query(m_sql, XSqlFormat("drop table {};", m_table).c_str()) == 0;
+    return mysql_query(m_sql, std::format("drop table {};", m_table).c_str()) == 0;
 }
 
 DropTable::DropTable(MYSQL *sql, const std::string &table):

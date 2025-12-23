@@ -1,10 +1,9 @@
 #pragma once
 #include <charconv>
-#include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#include <Format.h>
+#include <format>
 #include <SqlType.h>
 
 namespace xsql{
@@ -20,7 +19,7 @@ constexpr T ConvertSqlValue(std::string_view str){
     if( (ptr != str.data()) &&
         ((ec == std::errc{} && ptr == str.data() + str.size()) || 
         (ptr != str.data() + str.size() && *ptr == '.')))return value;
-    throw std::logic_error(XSqlFormat("convert to '{}' error", typeid(T).name()));
+    throw std::logic_error(std::format("convert to '{}' error", typeid(T).name()));
 }
 
 /* 字符串类型的特化 */
@@ -70,7 +69,7 @@ std::string ConvertToString(T& value)
     }else if constexpr(std::is_floating_point_v<type>){
         return std::to_string(value);
     }else if constexpr(std::is_convertible_v<type, std::string>){
-        return XSqlFormat("'{}'", value);
+        return std::format("'{}'", value);
     }else{
         static_assert(sizeof(T) == 0, "unsupported type");
     }

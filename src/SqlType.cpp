@@ -1,7 +1,7 @@
 #include <SqlType.h>
 #include <cstdint>
 #include <string>
-#include <Format.h>
+#include <format>
 #include <chrono>
 #include <utils.h>
 
@@ -55,7 +55,7 @@ DateTime::DateTime(const std::string &str)
 //     auto time_t_now = std::chrono::system_clock::to_time_t(tp);
 //     std::tm tm{};
 //     localtime_r(&time_t_now, &tm);
-//     return XSqlFormat("{}-{}-{} {}:{}:{}.{}", 
+//     return std::format("{}-{}-{} {}:{}:{}.{}", 
 //         tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, m_ts % 1000);
 // }
 
@@ -67,11 +67,11 @@ std::string DateTime::ToString(bool withMs) const
     std::tm tm{};
     localtime_r(&time_t_now, &tm);
     if(withMs){
-        return XSqlFormat("{}-{}-{} {}:{}:{}.{}", 
+        return std::format("{}-{}-{} {}:{}:{}.{}", 
             tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, 
             tm.tm_hour, tm.tm_min, tm.tm_sec, m_ts % 1000);
     }else{
-        return XSqlFormat("{}-{}-{} {}:{}:{}", 
+        return std::format("{}-{}-{} {}:{}:{}", 
             tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
     }
 }

@@ -80,7 +80,7 @@ double AnyValueConvert<double>(const std::string& value)
 template<>
 std::string ConvertToString(DateTime& value)
 {
-    return XSqlFormat("'{}'", value.ToString());
+    return std::format("'{}'", value.ToString());
 }
 
 }
