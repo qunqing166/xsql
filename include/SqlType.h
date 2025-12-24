@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <compare>
 
 namespace xsql{
 
@@ -30,13 +31,15 @@ public:
 
     static DateTime Now();
 
+    std::strong_ordering operator<=>(const DateTime& other) const;
     bool operator==(const DateTime& other) const;
-    bool operator!=(const DateTime& other) const;
-    bool operator>(const DateTime& other) const;
-    bool operator<(const DateTime& other) const;
-    bool operator>=(const DateTime& other) const;
-    bool operator<=(const DateTime& other) const;
 
+    // bool operator!=(const DateTime& other) const;
+    // bool operator>(const DateTime& other) const;
+    // bool operator<(const DateTime& other) const;
+    // bool operator>=(const DateTime& other) const;
+    // bool operator<=(const DateTime& other) const;
+    //
 
 private:
     int64_t m_ts;

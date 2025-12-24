@@ -1,4 +1,5 @@
 #include <SqlType.h>
+#include <compare>
 #include <cstdint>
 #include <string>
 #include <format>
@@ -92,30 +93,36 @@ DateTime DateTime::Now()
     return DateTime(duration_cast<milliseconds>(now.time_since_epoch()).count());
 }
 
+std::strong_ordering DateTime::operator<=>(const DateTime& other) const
+{
+   return m_ts <=> other.m_ts;
+}
+
+
 bool DateTime::operator==(const DateTime &other) const
 {
     return m_ts == other.m_ts;
 }
 
-bool DateTime::operator!=(const DateTime &other) const
-{
-    return m_ts != other.m_ts;
-}
-bool DateTime::operator>(const DateTime &other) const
-{
-    return m_ts > other.m_ts;
-}
-bool DateTime::operator<(const DateTime &other) const
-{
-    return m_ts < other.m_ts;
-}
-bool DateTime::operator>=(const DateTime &other) const
-{
-    return m_ts >= other.m_ts;
-}
-bool DateTime::operator<=(const DateTime &other) const
-{
-    return m_ts <= other.m_ts;
-}
-
+// bool DateTime::operator!=(const DateTime &other) const
+// {
+//     return m_ts != other.m_ts;
+// }
+// bool DateTime::operator>(const DateTime &other) const
+// {
+//     return m_ts > other.m_ts;
+// }
+// bool DateTime::operator<(const DateTime &other) const
+// {
+//     return m_ts < other.m_ts;
+// }
+// bool DateTime::operator>=(const DateTime &other) const
+// {
+//     return m_ts >= other.m_ts;
+// }
+// bool DateTime::operator<=(const DateTime &other) const
+// {
+//     return m_ts <= other.m_ts;
+// }
+//
 }
