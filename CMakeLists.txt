@@ -27,33 +27,7 @@ add_library(xsql STATIC ${SRC_LIST})
 add_library(xsql::lib ALIAS xsql)
 
 if(BUILD_TESTS)
-    include(FetchContent)
-    FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY git@github.com:google/googletest.git
-        GIT_TAG        v1.14.0
-    )
-    FetchContent_MakeAvailable(googletest)
-
-    add_executable (test_convert test/test_convert.cpp)
-    target_link_libraries(test_convert PRIVATE xsql::lib ) 
-    target_link_libraries(test_convert PRIVATE ${LIBS} GTest::gtest_main)
-    target_include_directories(test_convert PRIVATE ${GoogleTest_SOURCE_DIR}/include)
-
-    add_executable (test_xsql test/test_xsql.cpp)
-    target_link_libraries(test_xsql PRIVATE xsql::lib ) 
-    target_link_libraries(test_xsql PRIVATE ${LIBS} GTest::gtest_main)
-    target_include_directories(test_xsql PRIVATE ${GoogleTest_SOURCE_DIR}/include)
-
-    include(GoogleTest)
-
-    add_executable (test_repository test/test_repository.cpp)
-    target_link_libraries(test_repository PRIVATE xsql::lib ) 
-    target_link_libraries(test_repository PRIVATE ${LIBS} GTest::gtest_main)
-    target_include_directories(test_repository PRIVATE ${GoogleTest_SOURCE_DIR}/include)
-
-    include(GoogleTest)
-    
+    add_subdirectory(test)
 endif()
 
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
