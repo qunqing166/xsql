@@ -13,6 +13,33 @@ class User: public xsql::EntityBase<User>
     FIELD_REGISTER(xsql::DateTime, UpdateTime);
 };
 
+class User1{
+public:
+    User1(int a, const std::string& b, int c, const xsql::DateTime& d, const xsql::DateTime& e):
+        id(a), name(b), age(c), ct(d), ut(e)
+    {}
+    int id;
+    std::string name;
+    int age;
+    xsql::DateTime ct;
+    xsql::DateTime ut;
+};
+
+// TEST(test_entity, obj_create_runtime)
+// {
+//     for(int i = 0; i < 1000000; ++i){
+//         auto user1 = User1{int{}, std::string{}, int{}, xsql::DateTime{}, xsql::DateTime{}};
+//     }
+//
+// }
+//
+// TEST(test_entity, entity_create_runtime)
+// {
+//     for(int i = 0; i < 1000000; ++i){
+//         auto user = User{};
+//     }
+// }
+
 TEST(test_repository, curd)
 {
     auto con = xsql::SqlConnection::Create("root", "114514", "test");
@@ -22,7 +49,7 @@ TEST(test_repository, curd)
                                                 xsql::CreateTable::AUTO_INCREMENT | 
                                                 xsql::CreateTable::NOT_NULL |
                                                 xsql::CreateTable::IS_UNIQUE)
-                            .Filed("name", "varchar(100)", "user name", xsql::CreateTable::NONE)
+                            .Filed<std::string, 100>("name", "user name", xsql::CreateTable::NONE)
                             .Filed("age", "int", "",    xsql::CreateTable::AUTO_INCREMENT | 
                                                         xsql::CreateTable::NOT_NULL |
                                                         xsql::CreateTable::IS_UNIQUE)
