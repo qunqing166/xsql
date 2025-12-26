@@ -30,7 +30,7 @@ public:
         return it->second.first((T*)this);
     }
 
-   constexpr void Set(const std::string& name, const std::string& value)
+    constexpr void Set(const std::string& name, const std::string& value)
     {
         auto it = m_table.find(name);
         if(it == m_table.end())return;
@@ -55,9 +55,12 @@ public:
     }
 
     template<typename TYPE>
-    static TYPE Register(const std::string& filed, Getter getter, Setter setter, TYPE value = TYPE{})
+    inline static TYPE Register(const std::string& filed, Getter getter, Setter setter, TYPE&& value = TYPE{})
     {
-        m_table[filed] = {getter, setter};
+        if(m_isTableInited)return value;
+        if(m_table.contains(filed) == false){
+            m_table[filed] = {getter, setter};
+        }else m_isTableInited = true;
         return value;
     }
 
@@ -91,6 +94,7 @@ private:
 
 private:
     inline static std::unordered_map<std::string, std::pair<Getter, Setter>> m_table;
+    inline static bool m_isTableInited = false;
 };
 
 //}
