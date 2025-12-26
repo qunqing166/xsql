@@ -11,9 +11,9 @@ namespace xsql{
 
 using FieldIndex = std::unordered_map<std::string, int>;
 
-class QueryResult;
+class SqlResult;
 
-class QueryResultRow
+class SqlResultRow
 {
 public:
 
@@ -35,23 +35,23 @@ public:
 
 private:
 
-    QueryResultRow(MYSQL_ROW row, std::shared_ptr<FieldIndex> fieldIndex);
+    SqlResultRow(MYSQL_ROW row, std::shared_ptr<FieldIndex> fieldIndex);
 
 private:
-    friend class QueryResult;
+    friend class SqlResult;
 
     MYSQL_ROW m_row;
     std::shared_ptr<FieldIndex> m_fieldIndex;
 };
 
 
-class QueryResult
+class SqlResult
 {
 public:
-    QueryResult(MYSQL *sql);
-    ~QueryResult();
+    SqlResult(MYSQL *sql);
+    ~SqlResult();
 
-    QueryResultRow GetRow();
+    SqlResultRow GetRow();
     int RowCount();
 
 private:

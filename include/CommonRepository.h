@@ -1,7 +1,7 @@
 #pragma once
 #include "QueryCondition.h"
-#include "QueryResult.h"
 #include "SqlConnection.h"
+#include "SqlResult.h"
 #include <IRepositoryBase.h>
 #include <memory>
 #include <SqlQuery.h>
@@ -27,7 +27,7 @@ public:
         T ret{};
         EntityBase<T>& base = ret;
         std::vector<std::string> fields = base.GetFields();
-        QueryResult res = m_con->Query().Select(T::GetTableName(), fields).Where(where).Limit(1).Execute();
+        SqlResult res = m_con->Query().Select(T::GetTableName(), fields).Where(where).Limit(1).Execute();
         if(auto row = res.GetRow())
         {
             for(auto& field: fields)
@@ -44,7 +44,7 @@ public:
         std::list<T> ret;
         T tmp{};
         std::vector<std::string> fields = tmp.GetFields();
-        QueryResult res = m_con->Query().Select(T::GetTableName(), fields).Execute();
+        SqlResult res = m_con->Query().Select(T::GetTableName(), fields).Execute();
         while(auto row = res.GetRow())
         {
             T val{};
@@ -62,7 +62,7 @@ public:
         std::list<T> ret;
         T tmp{};
         std::vector<std::string> fields = tmp.GetFields();
-        QueryResult res = m_con->Query().Select(T::GetTableName(), fields)
+        SqlResult res = m_con->Query().Select(T::GetTableName(), fields)
                                         .Where(where)
                                         .Limit(pageSize)
                                         .Offset((pageIndex - 1) * pageSize)

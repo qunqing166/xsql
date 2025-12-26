@@ -1,11 +1,11 @@
 #include "mysql.h"
-#include <QueryResult.h>
+#include <SqlResult.h>
 #include <memory>
 #include <stdexcept>
 
 namespace xsql{
 
-QueryResult::QueryResult(MYSQL *sql):
+SqlResult::SqlResult(MYSQL *sql):
     m_sql(sql)
 {
     m_res = mysql_store_result(sql);
@@ -15,21 +15,21 @@ QueryResult::QueryResult(MYSQL *sql):
     GetFieldIndex();
 }
 
-QueryResult::~QueryResult(){
+SqlResult::~SqlResult(){
     mysql_free_result(m_res);
 }
 
 
-QueryResultRow QueryResult::GetRow(){
-    return QueryResultRow(mysql_fetch_row(m_res), m_fieldIndex);
+SqlResultRow SqlResult::GetRow(){
+    return SqlResultRow(mysql_fetch_row(m_res), m_fieldIndex);
 }
 
-int QueryResult::RowCount()
+int SqlResult::RowCount()
 {
     return mysql_num_rows(m_res);
 }
 
-void QueryResult::GetFieldIndex(){
+void SqlResult::GetFieldIndex(){
     m_fieldIndex = std::make_shared<FieldIndex>();
     MYSQL_FIELD* field;
     int index = 0;
@@ -39,7 +39,7 @@ void QueryResult::GetFieldIndex(){
     }
 }
 
-QueryResultRow::QueryResultRow(MYSQL_ROW row, std::shared_ptr<FieldIndex> fieldIndex):
+SqlResultRow::SqlResultRow(MYSQL_ROW row, std::shared_ptr<FieldIndex> fieldIndex):
     m_row(row), m_fieldIndex(fieldIndex)
 {
     

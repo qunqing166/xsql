@@ -1,5 +1,5 @@
 #include <SqlQuery.h>
-#include <QueryResult.h>
+#include <SqlResult.h>
 #include <format>
 #include <cstdint>
 #include <mysql/mysql.h>
@@ -89,7 +89,7 @@ SelectQuery& SelectQuery::Offset(int count)
     return *this;
 }
 
-QueryResult SelectQuery::Execute()
+SqlResult SelectQuery::Execute()
 {
     std::string sub_where;
     std::string sub_orderby;
@@ -104,7 +104,7 @@ QueryResult SelectQuery::Execute()
     if(mysql_query(m_sql, query.c_str())){
         throw std::logic_error(std::format("query error: {}", mysql_error(m_sql)));
     }
-    return QueryResult(m_sql);
+    return SqlResult(m_sql);
 }
 /******************************************************/
 

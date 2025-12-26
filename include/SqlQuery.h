@@ -3,8 +3,8 @@
 #include <vector>
 #include <mysql/mysql.h>
 #include <QueryCondition.h>
-#include "QueryResult.h"
-#include "SqlValue.h"
+#include <SqlResult.h>
+#include <SqlValue.h>
 
 namespace xsql
 {
@@ -46,7 +46,7 @@ public:
     SelectQuery& Limit(int count);
     SelectQuery& Offset(int count);
 
-    QueryResult Execute();
+    SqlResult Execute();
 
 private:
 
