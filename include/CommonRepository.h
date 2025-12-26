@@ -2,7 +2,6 @@
 #include "QueryCondition.h"
 #include "SqlConnection.h"
 #include "SqlResult.h"
-#include <IRepositoryBase.h>
 #include <memory>
 #include <SqlQuery.h>
 #include <optional>
@@ -13,7 +12,7 @@
 namespace xsql{
 
 template <typename T>
-class CommonRepository: public IRepositoryBase<T>
+class CommonRepository
 {
 public:
     CommonRepository(std::shared_ptr<SqlConnection> con):
@@ -22,7 +21,7 @@ public:
         
     }
 
-    std::optional<T> GetFirstOrDefault(const QueryWhere& where = QueryWhere()) override
+    std::optional<T> GetFirstOrDefault(const QueryWhere& where = QueryWhere())
     {
         T ret{};
         EntityBase<T>& base = ret;
@@ -39,7 +38,7 @@ public:
         }
         return ret;
     }
-    std::list<T> GetAll() override
+    std::list<T> GetAll()
     {
         std::list<T> ret;
         T tmp{};
@@ -57,7 +56,7 @@ public:
         return ret;
     }
 
-    std::list<T> GetPage(const QueryWhere& where, int pageIndex, int pageSize) override
+    std::list<T> GetPage(const QueryWhere& where, int pageIndex, int pageSize)
     {
         std::list<T> ret;
         T tmp{};
@@ -80,7 +79,7 @@ public:
 
     }
 
-    int Add(const T& val) override
+    int Add(const T& val)
     {
         std::vector<FieldAndValue> fvs;
         for(auto& it: T::GetFields())
@@ -90,7 +89,7 @@ public:
         return m_con->Query().Insert(T::GetTableName(), fvs).Execute();
     }
 
-    int Add(const std::vector<T>& arr) override
+    int Add(const std::vector<T>& arr)
     {
         int count = 0;
         std::vector<FieldAndValue> fvs;
@@ -105,12 +104,12 @@ public:
         return count;
     }
 
-    int Delete(const QueryWhere& where) override
+    int Delete(const QueryWhere& where)
     {
         return m_con->Query().Delete(T::GetTableName()).Where(where).Execute();
     }
 
-    int Update(const T& val, const QueryWhere& where) override
+    int Update(const T& val, const QueryWhere& where)
     { 
         int count = 0;
         std::vector<FieldAndValue> fvs;
