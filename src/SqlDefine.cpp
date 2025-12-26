@@ -25,12 +25,7 @@ CreateTable &CreateTable::Filed(const std::string &field,
                                 int cons,
                                 const std::string& defalut)
 {
-    FieldDescription filedDesc{ .Filed = field,
-                                .Type = type,
-                                .Default = defalut,
-                                .Description = desc,
-                                .Constrain = cons};
-    m_tableStruct.push_back(filedDesc);
+    m_tableStruct.emplace_back(field, type, defalut, desc, cons);
     return *this;
 }
 

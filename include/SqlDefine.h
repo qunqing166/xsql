@@ -1,4 +1,5 @@
 #pragma once
+#include "SqlType.h"
 #include <mysql/mysql.h>
 #include <string>
 #include <map>
@@ -33,21 +34,24 @@ public:
         AUTO_INCREMENT = 2,
         IS_UNIQUE = 4
     };
+    
+    template<typename T, std::size_t N = 0>
+    CreateTable& Filed( const std::string &field, 
+                        const std::string &desc = "",
+                        int cons = Constraint::NONE,
+                        const std::string& defalut = "")
+    {
+        m_tableStruct.emplace_back(field, TypeMapper<T, N>::value, defalut, desc, cons);
+        return *this;
+    }
 
-    // CreateTable& Filed( const std::string& field, 
-    //                 const std::string& type, 
-    //                 const std::string& desc, 
-    //                 bool isOnly,
-    //                 bool canBeNull = false,
-    //                 bool priKey = false, 
-    //                 bool asKey = false);
 
     CreateTable& Filed( const std::string &field, 
                         const std::string &type,
                         const std::string &desc = "",
                         int cons = Constraint::NONE, 
                         const std::string& defalut = "");
-
+    
     bool Execute();
 
     std::string GetString();
