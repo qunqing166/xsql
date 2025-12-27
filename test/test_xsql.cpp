@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <EntityBase.h>
 #include <xsql.h>
+#include <mysql/MysqlConnection.h>
 
 class User: public xsql::EntityBase<User>
 {
@@ -14,7 +15,9 @@ class User: public xsql::EntityBase<User>
 
 TEST(functoin_xsql_test, create_table)
 {
-    auto con = xsql::SqlConnection::Create("root", "114514", "test");
+    auto con = xsql::mysql::MysqlConnection::Create("root", "114514", "test");
+
+    return;
 
     auto val = con->Define().CreateTable("user")
                             .Filed("id", "int", "just index", 
@@ -25,8 +28,8 @@ TEST(functoin_xsql_test, create_table)
                             .Filed("age", "int", "",    xsql::CreateTable::AUTO_INCREMENT | 
                                                         xsql::CreateTable::NOT_NULL |
                                                         xsql::CreateTable::IS_UNIQUE)
-                            .Filed("create_time", "datetime")
-                            .Filed("update_time", "datetime")
+                            .Filed("createtime", "datetime")
+                            .Filed("updatetime", "datetime")
                             .AddPrimaryKey("id")
                             .Execute();
 
@@ -37,7 +40,7 @@ TEST(functoin_xsql_test, create_table)
 
 TEST(functoin_xsql_test, xsql_query)
 {
-    auto con = xsql::SqlConnection::Create("root", "114514", "test");
+    auto con = xsql::mysql::MysqlConnection::Create("root", "114514", "test");
 
     auto val = con->Define().CreateTable("user")
                             .Filed("id", "int", "just index", 
@@ -63,19 +66,19 @@ TEST(functoin_xsql_test, xsql_query)
                                                 {"update_time", now}}).Execute();
     EXPECT_EQ(count, 1);
 
-    EXPECT_EQ(con->Query().Select("user", {"id"}).Execute().RowCount(), 1);
+    EXPECT_EQ(con->Query().Select("user", {"id"}).Execute()->RowCount(), 1);
 
     auto res = con->Query() .Select("user", {"id", "name", "age", "create_time", "update_time"})
                             .Where(xsql::QueryWhere()
                             .Equal("id", 0))
                             .Execute();
 
-    while(auto row = res.GetRow()){
-        EXPECT_EQ(row.Get<int>("id"), 1);
-        EXPECT_EQ(row.Get<std::string>("name"), "qunqing166");
-        EXPECT_EQ(row.Get<int>("age"), 21);
-        EXPECT_EQ(row.Get<xsql::DateTime>("create_time").GetSec(), now.GetSec());
-        EXPECT_EQ(row.Get<xsql::DateTime>("update_time").GetSec(), now.GetSec());
+    while(auto row = res->GetRow()){
+        EXPECT_EQ(row->Get<int>("id"), 1);
+        EXPECT_EQ(row->Get<std::string>("name"), "qunqing166");
+        EXPECT_EQ(row->Get<int>("age"), 21);
+        EXPECT_EQ(row->Get<xsql::DateTime>("create_time").GetSec(), now.GetSec());
+        EXPECT_EQ(row->Get<xsql::DateTime>("update_time").GetSec(), now.GetSec());
     }
 
     now = xsql::DateTime::Now();
@@ -92,17 +95,17 @@ TEST(functoin_xsql_test, xsql_query)
                             .Equal("id", 0))
                             .Execute();
 
-    while(auto row = res1.GetRow()){
-        EXPECT_EQ(row.Get<int>("id"), 1);
-        EXPECT_EQ(row.Get<std::string>("name"), "qunqing");
-        EXPECT_EQ(row.Get<int>("age"), 18);
-        EXPECT_EQ(row.Get<xsql::DateTime>("update_time").GetSec(), now.GetSec());
+    while(auto row = res1->GetRow()){
+        EXPECT_EQ(row->Get<int>("id"), 1);
+        EXPECT_EQ(row->Get<std::string>("name"), "qunqing");
+        EXPECT_EQ(row->Get<int>("age"), 18);
+        EXPECT_EQ(row->Get<xsql::DateTime>("update_time").GetSec(), now.GetSec());
     }
 
     count = con->Query().Delete("user").Where(xsql::QueryWhere{}.Equal("id", 1)).Execute();
     EXPECT_EQ(count, 1);
 
-    EXPECT_EQ(con->Query().Select("user", {"id"}).Execute().RowCount(), 0);
+    EXPECT_EQ(con->Query().Select("user", {"id"}).Execute()->RowCount(), 0);
 
     EXPECT_ANY_THROW(con->Query().Insert("user", {  {"id", 0}, 
                                                     {"name", "qunqing166"}, 

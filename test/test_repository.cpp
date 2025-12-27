@@ -2,6 +2,7 @@
 #include <EntityBase.h>
 #include <xsql.h>
 #include <CommonRepository.h>
+#include <mysql/MysqlConnection.h>
 
 class User: public xsql::EntityBase<User>
 {
@@ -42,7 +43,8 @@ public:
 
 TEST(test_repository, curd)
 {
-    auto con = xsql::SqlConnection::Create("root", "114514", "test");
+    
+    auto con = xsql::mysql::MysqlConnection::Create("root", "114514", "test");
 
     auto val = con->Define().CreateTable("User")
                             .Filed("id", "int", "just index", 

@@ -1,10 +1,10 @@
-#include "SqlConnection.h"
+#include "mysql/MysqlConnection.h"
 #include <gtest/gtest.h>
 #include <SqlDefine.h>
 
 struct TestCreateTable:testing::Test{
     void SetUp() override{
-        con = xsql::SqlConnection::Create("root", "114514", "test");
+        con = xsql::mysql::MysqlConnection::Create("root", "114514", "test");
     }
     void TearDown() override{
         con.reset();
@@ -22,7 +22,7 @@ TEST_F(TestCreateTable, t1)
                     .Filed<std::string, 50>("addr")
                     .Execute();
                                
-
+    con->Define().DropTable("user").Execute();
 }
 
 // TEST(test_create_table, runtime_add_field)
