@@ -12,7 +12,16 @@ project(x-sql)
 set(INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/include/utils
-    /usr/include/mysql/
+    ${PROJECT_SOURCE_DIR}/include/db_type
+    #    /usr/include/mysql/
+)
+
+aux_source_directory(${PROJECT_SOURCE_DIR}/src SRC_COMMON)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/db_type/mysql SRC_MYSQL)
+
+set(SRC_LISTS
+    ${SRC_COMMON}
+    ${SRC_MYSQL}
 )
 
 set(LIBS
@@ -21,10 +30,9 @@ set(LIBS
 
 include_directories(${INCLUDE_DIRS})
 
-aux_source_directory(src SRC_LIST)
-
-add_library(xsql STATIC ${SRC_LIST})
+add_library(xsql STATIC ${SRC_LISTS})
 add_library(xsql::lib ALIAS xsql)
+target_link_libraries(xsql PRIVATE ${LIBS})
 
 if(BUILD_TESTS)
     add_subdirectory(test)

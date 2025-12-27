@@ -1,8 +1,7 @@
+#include "SqlExecutor.h"
 #include <SqlQuery.h>
 #include <SqlResult.h>
 #include <format>
-#include <cstdint>
-#include <mysql/mysql.h>
 #include <stdexcept>
 #include <string>
 #include <Debug.h>
@@ -11,7 +10,7 @@ namespace xsql{
 
 /**************************************************/
 
-SqlQuery::SqlQuery(MYSQL* sql):
+SqlQuery::SqlQuery(SqlExecutor::ptr sql):
     m_sql(sql)
 {
 
@@ -44,7 +43,7 @@ UpdateQuery SqlQuery::Update(const std::string& table, const std::vector<FieldAn
 /***************************************************/
 
 
-SelectQuery::SelectQuery(MYSQL* sql, 
+SelectQuery::SelectQuery(SqlExecutor::ptr sql, 
             const std::string& table, 
             const std::vector<std::string>& fields):
     m_sql(sql),
@@ -89,7 +88,7 @@ SelectQuery& SelectQuery::Offset(int count)
     return *this;
 }
 
-SqlResult SelectQuery::Execute()
+SqlResult::ptr SelectQuery::Execute()
 {
     std::string sub_where;
     std::string sub_orderby;
@@ -101,16 +100,16 @@ SqlResult SelectQuery::Execute()
     if(m_limit > 0)sub_limit = std::format("limit {}", m_limit);
     if(m_offset > 0)sub_offset = std::format("offset {}", m_offset);
     std::string query = std::format("select {} from {} {} {} {} {}", m_select, m_table, sub_where, m_orderby, sub_limit, sub_offset);
-    if(mysql_query(m_sql, query.c_str())){
-        throw std::logic_error(std::format("query error: {}", mysql_error(m_sql)));
+    if(m_sql->Execute(query) == false){
+        throw std::logic_error("query error: {}");
     }
-    return SqlResult(m_sql);
+    return m_sql->Result();
 }
 /******************************************************/
 
 
 
-InsertQuery::InsertQuery(MYSQL* sql, const std::string& table, const std::vector<std::pair<std::string, SqlInputValue>>& fieldAndValues):
+InsertQuery::InsertQuery(SqlExecutor::ptr sql, const std::string& table, const std::vector<std::pair<std::string, SqlInputValue>>& fieldAndValues):
     m_sql(sql), m_table(table)    
 {
     auto begin = fieldAndValues.begin();
@@ -133,21 +132,18 @@ int InsertQuery::Execute()
 {
     std::string query = std::format("insert into {} ({}) values ({})", m_table, m_fields, m_values);
     XSQL_DEBUG("insert query: {}", query);
-    if(mysql_query(m_sql, query.c_str()))
+    if(m_sql->Execute(query) == false)
     {
-        throw std::logic_error(std::format("insert: mysql_query error, {}", mysql_error(m_sql)));
+        throw std::logic_error("insert: mysql_query error");
     }
-    
-    int val = mysql_affected_rows(m_sql);
-    if(val == UINT64_MAX)return -1;
-    return val;
+    return m_sql->AffectedRowNum();   
 }
 
 
 /******************************************************************************/
 
 
-UpdateQuery::UpdateQuery(MYSQL* sql, const std::string& table, const std::vector<FieldAndValue>& fieldAndValue):
+UpdateQuery::UpdateQuery(SqlExecutor::ptr sql, const std::string& table, const std::vector<FieldAndValue>& fieldAndValue):
     m_sql(sql), m_table(table)
 {
     auto begin = fieldAndValue.begin();
@@ -169,14 +165,11 @@ int UpdateQuery::Execute()
     
     XSQL_DEBUG("update query: {}", query);
 
-    if(mysql_query(m_sql, query.c_str()))
+    if(m_sql->Execute(query) == false)
     {
-        throw std::logic_error(std::format("update: mysql_query error, {}", mysql_error(m_sql)));
+        throw std::logic_error("update: mysql_query error");
     }
-    
-    int val = mysql_affected_rows(m_sql);
-    if(val == UINT64_MAX)return -1;
-    return val;
+    return m_sql->AffectedRowNum();
 }
 
 UpdateQuery& UpdateQuery::Where(const std::string& condition)
@@ -194,7 +187,7 @@ UpdateQuery& UpdateQuery::Where(const QueryWhere& condition)
 /*****************************************************************************/
 
 
-DeleteQuery::DeleteQuery(MYSQL* sql, const std::string& table):
+DeleteQuery::DeleteQuery(SqlExecutor::ptr sql, const std::string& table):
     m_sql(sql), m_table(table)
 {
     
@@ -217,16 +210,11 @@ int DeleteQuery::Execute()
     if(m_where.empty() == false)m_where = std::format("where {}", m_where);
     std::string query = std::format("delete from {} {}", m_table, m_where);
 
-    if(mysql_query(m_sql, query.c_str()))
+    if(m_sql->Execute(query) == false)
     {
-        throw std::logic_error(std::format("delete: mysql_query error, {}", mysql_error(m_sql)));
+        throw std::logic_error("delete: mysql_query error");
     }
-    
-    int val = mysql_affected_rows(m_sql);
-    if(val == UINT64_MAX)return -1;
-    return val;
+    return m_sql->AffectedRowNum();    
 }
-
-
 
 }

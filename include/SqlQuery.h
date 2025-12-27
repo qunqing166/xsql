@@ -1,10 +1,10 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <mysql/mysql.h>
 #include <QueryCondition.h>
 #include <SqlResult.h>
 #include <SqlValue.h>
+#include <SqlExecutor.h>
 
 namespace xsql
 {
@@ -21,7 +21,7 @@ class SqlQuery
 {
 public:
 
-    SqlQuery(MYSQL* sql);
+    SqlQuery(SqlExecutor::ptr sql);
 
     SelectQuery Select(const std::string table, const std::vector<std::string>& fields);
     InsertQuery Insert(const std::string& table, const std::vector<FieldAndValue>& fieldAndValue);
@@ -30,7 +30,7 @@ public:
    
 private:
 
-    MYSQL* m_sql;
+    SqlExecutor::ptr m_sql;
 
 };
 
@@ -46,17 +46,17 @@ public:
     SelectQuery& Limit(int count);
     SelectQuery& Offset(int count);
 
-    SqlResult Execute();
+    SqlResult::ptr Execute();
 
 private:
 
-    SelectQuery(MYSQL* sql, const std::string& table, const std::vector<std::string>& fields);
+    SelectQuery(SqlExecutor::ptr sql, const std::string& table, const std::vector<std::string>& fields);
 
 private:
     
     friend class SqlQuery;
 
-    MYSQL* m_sql;
+    SqlExecutor::ptr m_sql;
     std::string m_table;
     std::string m_select;
     std::string m_where;
@@ -73,12 +73,12 @@ public:
 
 private:
 
-    InsertQuery(MYSQL* sql, const std::string& table, const std::vector<FieldAndValue>& filedAndValues);
+    InsertQuery(SqlExecutor::ptr sql, const std::string& table, const std::vector<FieldAndValue>& filedAndValues);
 
 private:
     friend class SqlQuery;
 
-    MYSQL* m_sql;
+    SqlExecutor::ptr m_sql;
     std::string m_table;
     std::string m_fields;
     std::string m_values;
@@ -95,13 +95,13 @@ public:
 
 private:
     
-    UpdateQuery(MYSQL* sql, const std::string& table, const std::vector<FieldAndValue>& fieldAndValue);
+    UpdateQuery(SqlExecutor::ptr sql, const std::string& table, const std::vector<FieldAndValue>& fieldAndValue);
 
-private:
+    private:
 
     friend class SqlQuery;
 
-    MYSQL* m_sql;
+    SqlExecutor::ptr m_sql;
     std::string m_table;
     std::string m_where;
     std::string m_fieldAndValue;
@@ -117,13 +117,13 @@ public:
 
 private:
 
-    DeleteQuery(MYSQL* sql, const std::string& table);
+    DeleteQuery(SqlExecutor::ptr sql, const std::string& table);
 
 private:
 
     friend class SqlQuery;
 
-    MYSQL* m_sql;
+    SqlExecutor::ptr m_sql;
     std::string m_table;
     std::string m_where;
     

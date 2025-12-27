@@ -1,48 +1,14 @@
-#include "SqlConnection.h"
-#include "SqlQuery.h"
-#include <mysql/mysql.h>
-#include <stdexcept>
+#include <SqlConnection.h>
 
 namespace xsql{
 
-
-SqlConnection::SqlConnection(   const std::string& user, 
-                                const std::string& passwd, 
-                                const std::string& dbName, 
-                                const std::string& host, 
-                                uint16_t port, 
-                                int conCount):
-    m_user(user), m_passwd(passwd), m_dbName(dbName),
-    m_host(host), m_port(port), m_conCount(conCount)
-    {
-    for(int i = 0; i < conCount; ++i){
-        MYSQL* sql = mysql_init(nullptr);
-        if(sql == nullptr){
-            throw std::logic_error("sql init error");
-        }
-        if(mysql_real_connect(  sql, 
-                                host.c_str(), 
-                                user.c_str(), 
-                                passwd.c_str(), 
-                                dbName.c_str(),
-                                port, nullptr, 0) == nullptr){
-            throw std::logic_error("sql connect error");
-        }
-        m_sqls.push_back(sql);
-    }
-}
-
-std::shared_ptr<SqlConnection> SqlConnection::Create(const std::string &user, const std::string &passwd, const std::string &dbName, const std::string &host, uint16_t port, int conCount)
-{
-    return std::make_shared<SqlConnection>(user, passwd, dbName, host, port, conCount);
-}
-
 SqlQuery SqlConnection::Query(){
-    return SqlQuery(m_sqls.front());   
+    return SqlQuery(GetSql());   
 }
 
 SqlDefine SqlConnection::Define()
 {
-    return SqlDefine(m_sqls.front());
+    return SqlDefine(GetSql());
 }
+
 }

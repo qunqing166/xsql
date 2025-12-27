@@ -1,71 +1,47 @@
 #pragma once
-#include <stdexcept>
 #include <string>
-#include <unordered_map>
-#include <mysql/mysql.h>
 #include <utils.h>
 #include <memory>
+#include <SqlExecutor.h>
+#include <ValueConvert.h>
 
 namespace xsql{
-
-
-using FieldIndex = std::unordered_map<std::string, int>;
 
 class SqlResult;
 
 class SqlResultRow
 {
 public:
+    using ptr = std::shared_ptr<SqlResultRow>;
+
+    virtual ~SqlResultRow() = default;
 
     template<typename T>
     T Get(const std::string& field){
-        if(m_fieldIndex == nullptr){
-            throw std::logic_error("invalid row");
-        }
-        return ConvertSqlValue<T>(std::string(m_row[m_fieldIndex->at(field)]));
-    }
-
-    operator bool() const noexcept{
-        return m_row != nullptr;
+        return ConvertSqlValue<T>(GetValue(field));
     }
 
     bool operator==(bool val) noexcept{
-        return m_row != nullptr;
+        return IsEnd() == false;
     }
 
-private:
+protected:
 
-    SqlResultRow(MYSQL_ROW row, std::shared_ptr<FieldIndex> fieldIndex);
+    virtual bool IsEnd() const = 0;
+    virtual std::string GetValue(const std::string& field) = 0;
 
-private:
-    friend class SqlResult;
-
-    MYSQL_ROW m_row;
-    std::shared_ptr<FieldIndex> m_fieldIndex;
 };
 
 
 class SqlResult
 {
 public:
-    SqlResult(MYSQL *sql);
-    ~SqlResult();
+    using ptr = std::shared_ptr<SqlResult>;
 
-    SqlResultRow GetRow();
-    int RowCount();
+    virtual ~SqlResult() = default;
 
-private:
-    
-    /**
-     * @brief 获取被查询的字段的索引
-     */
-    void GetFieldIndex();
-
-private:
-    MYSQL* m_sql;
-    MYSQL_RES* m_res;
-    std::shared_ptr<FieldIndex> m_fieldIndex;
-    std::unordered_map<std::string, const char*> m_values;
+    virtual SqlResultRow::ptr GetRow() = 0;
+    virtual int RowCount() = 0;
 };
 
 

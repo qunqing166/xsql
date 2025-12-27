@@ -1,9 +1,9 @@
 #pragma once
-#include "SqlType.h"
-#include <mysql/mysql.h>
 #include <string>
 #include <map>
 #include <vector>
+#include <SqlExecutor.h>
+#include <SqlType.h>
 
 namespace xsql
 {
@@ -15,13 +15,13 @@ class SqlDefine
 {
 public:
 
-    SqlDefine(MYSQL* sql);
+    SqlDefine(SqlExecutor::ptr sql);
 
     xsql::CreateTable CreateTable(const std::string& table);
     xsql::DropTable DropTable(const std::string& table);
 
 private:
-    MYSQL* m_sql;
+    SqlExecutor::ptr m_sql;
 };
 
 class CreateTable
@@ -77,10 +77,10 @@ private:
 
     static void FormatTableStruct(std::stringstream& ss, const CreateTable::FieldDescription& des);
 
-    CreateTable(MYSQL* sql, const std::string& table);
+    CreateTable(SqlExecutor::ptr sql, const std::string& table);
 
     friend class SqlDefine;
-    MYSQL* m_sql;
+    SqlExecutor::ptr m_sql;
     std::string m_table;
     std::vector<FieldDescription> m_tableStruct;
     // std::vector<std::pair<std::string, std::string>> m_keys;
@@ -96,9 +96,9 @@ public:
 private:
     friend class SqlDefine;
 
-    DropTable(MYSQL* sql, const std::string& table);
+    DropTable(SqlExecutor::ptr sql, const std::string& table);
 
-    MYSQL* m_sql;
+    SqlExecutor::ptr m_sql;
     std::string m_table;
 
 };

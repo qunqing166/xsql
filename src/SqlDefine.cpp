@@ -1,10 +1,11 @@
-#include "SqlDefine.h"
+#include <SqlDefine.h>
+#include <SqlExecutor.h>
 #include <sstream>
 #include <format>
 
 namespace xsql{
 
-SqlDefine::SqlDefine(MYSQL *sql):
+SqlDefine::SqlDefine(SqlExecutor::ptr sql):
     m_sql(sql)
 {
 }
@@ -32,7 +33,7 @@ CreateTable &CreateTable::Filed(const std::string &field,
 bool CreateTable::Execute()
 {
     std::string cmd = GetString();
-    return mysql_query(m_sql, cmd.c_str()) == 0;
+    return m_sql->Execute(cmd);
 }
 
 std::string CreateTable::GetString()
@@ -92,18 +93,17 @@ void CreateTable::FormatTableStruct(std::stringstream &ss, const CreateTable::Fi
     if(des.Description.empty() == false)ss << " comment '" << des.Description << "'";
 }
 
-CreateTable::CreateTable(MYSQL *sql, const std::string &table):
+CreateTable::CreateTable(SqlExecutor::ptr sql, const std::string &table):
     m_sql(sql), m_table(table)
 {
 }
 
 bool DropTable::Execute()
 {
-    // return false;
-    return mysql_query(m_sql, std::format("drop table {};", m_table).c_str()) == 0;
+    return m_sql->Execute(std::format("drop table {};", m_table));
 }
 
-DropTable::DropTable(MYSQL *sql, const std::string &table):
+DropTable::DropTable(SqlExecutor::ptr sql, const std::string &table):
     m_sql(sql), m_table(table)
 {
 }

@@ -1,13 +1,13 @@
 #pragma once
-#include "QueryCondition.h"
-#include "SqlConnection.h"
-#include "SqlResult.h"
 #include <memory>
-#include <SqlQuery.h>
 #include <optional>
 #include <string>
 #include <EntityBase.h>
 #include <SqlConnection.h>
+#include <QueryCondition.h>
+#include <SqlConnection.h>
+#include <SqlResult.h>
+#include <SqlQuery.h>
 
 namespace xsql{
 
@@ -26,12 +26,12 @@ public:
         T ret{};
         EntityBase<T>& base = ret;
         std::vector<std::string> fields = base.GetFields();
-        SqlResult res = m_con->Query().Select(T::GetTableName(), fields).Where(where).Limit(1).Execute();
-        if(auto row = res.GetRow())
+        SqlResult::ptr res = m_con->Query().Select(T::GetTableName(), fields).Where(where).Limit(1).Execute();
+        if(auto row = res->GetRow())
         {
             for(auto& field: fields)
             {
-                ret.Set(field, row.Get<std::string>(field));
+                ret.Set(field, row->Get<std::string>(field));
             }
         }else{
             return std::nullopt;
@@ -43,13 +43,13 @@ public:
         std::list<T> ret;
         T tmp{};
         std::vector<std::string> fields = tmp.GetFields();
-        SqlResult res = m_con->Query().Select(T::GetTableName(), fields).Execute();
-        while(auto row = res.GetRow())
+        SqlResult::ptr res = m_con->Query().Select(T::GetTableName(), fields).Execute();
+        while(auto row = res->GetRow())
         {
             T val{};
             for(auto& field: fields)
             {
-                val.Set(field, row.Get<std::string>(field));
+                val.Set(field, row->Get<std::string>(field));
             }
             ret.push_back(val);
         }
@@ -61,17 +61,17 @@ public:
         std::list<T> ret;
         T tmp{};
         std::vector<std::string> fields = tmp.GetFields();
-        SqlResult res = m_con->Query().Select(T::GetTableName(), fields)
+        SqlResult::ptr res = m_con->Query().Select(T::GetTableName(), fields)
                                         .Where(where)
                                         .Limit(pageSize)
                                         .Offset((pageIndex - 1) * pageSize)
                                         .Execute();
-        while(auto row = res.GetRow())
+        while(auto row = res->GetRow())
         {
             T val{};
             for(auto& field: fields)
             {
-                val.Set(field, row.Get<std::string>(field));
+                val.Set(field, row->Get<std::string>(field));
             }
             ret.push_back(val);
         }
