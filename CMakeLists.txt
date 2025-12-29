@@ -18,6 +18,7 @@ set(INCLUDE_DIRS
 
 aux_source_directory(${PROJECT_SOURCE_DIR}/src SRC_COMMON)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/db_type/mysql SRC_MYSQL)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/db_type/sqlite SRC_SQLITE)
 
 set(SRC_LISTS
     ${SRC_COMMON}
@@ -30,9 +31,15 @@ set(LIBS
 
 include_directories(${INCLUDE_DIRS})
 
-add_library(xsql STATIC ${SRC_LISTS})
-add_library(xsql::lib ALIAS xsql)
-target_link_libraries(xsql PRIVATE ${LIBS})
+add_library(xsql_core STATIC ${SRC_LISTS})
+add_library(xsql_mysql STATIC ${SRC_MYSQL})
+target_link_libraries(xsql_mysql PRIVATE xsql_core mysqlclient)
+
+add_library(xsql_sqlite STATIC ${SRC_SQLITE})
+target_link_libraries(xsql_sqlite PRIVATE xsql_core sqlite3)
+
+add_library(xsql::mysql ALIAS xsql_mysql)
+add_library(xsql::sqlite ALIAS xsql_sqlite)
 
 if(BUILD_TESTS)
     add_subdirectory(test)
